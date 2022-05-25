@@ -1,5 +1,5 @@
 # Site settings
-baseurl = "https://example.org/"
+baseurl = "http://明奇.top/"
 languageCode = "en-us"
 title = "心有玲曦遇见你"
 theme = "beautifulhugo"
@@ -7,6 +7,6 @@ theme = "beautifulhugo"
 
 
 # 每页显示的文章数量用于分页
-paginate = 1
+paginate = 20
 
 
