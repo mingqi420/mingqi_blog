@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on 心有玲曦遇见你</title>
+    <link>http://%E6%98%8E%E5%A5%87.top/categories/</link>
+    <description>Recent content in Categories on 心有玲曦遇见你</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <managingEditor>lidefu_420@163.com (李明奇)</managingEditor>
+    <webMaster>lidefu_420@163.com (李明奇)</webMaster>
+    <lastBuildDate>Wed, 25 May 2022 16:20:41 +0800</lastBuildDate><atom:link href="http://%E6%98%8E%E5%A5%87.top/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Base</title>
+      <link>http://%E6%98%8E%E5%A5%87.top/categories/documentation/base/</link>
+      <pubDate>Wed, 25 May 2022 16:20:41 +0800</pubDate>
+      <author>lidefu_420@163.com (李明奇)</author>
+      <guid>http://%E6%98%8E%E5%A5%87.top/categories/documentation/base/</guid>
+      <description>文档</description>
+    </item>
+    
+  </channel>
+</rss>
