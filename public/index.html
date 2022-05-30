@@ -113,6 +113,59 @@
         alt="https://www.gravatar.com/avatar/441297f805ed7e286de81f0e0d211330?s=240&amp;d=mp"
         title="https://www.gravatar.com/avatar/441297f805ed7e286de81f0e0d211330?s=240&amp;d=mp" /></a></div><h1 class="home-title">心有玲曦遇奇缘</h1><div class="home-subtitle"><div id="id-3" class="typeit"></div></div><div class="links"><a href="https://github.com/mingqi420" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw" aria-hidden="true"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/godifferentwithothers/">Go语言和其他语言的差异</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2022-05-30">2022-05-30</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>程序设计</a></span></div><div class="content">Go语言和其他语言的不同 ​	Go语言作为出现比较晚的一门编程语言，在其原生支持高并发、云原生等领域的优秀表现，像目前比较流程的容器编排技术Kubernetes、容器技术Docker都是用Go语言写的，像Java等其他面向对象的语言，虽然也能做云原生相关的开发，但是支持的程度远没有Go语言高，凭借其语言特性和简单的编程方式，弥补了其他编程语言一定程度上的不足，一度成为一个热门的编程语言。
+​	最近在学习Go语言，我之前使用过C#、Java等面向对象编程的语言，发现其中有很多的编程方式和其他语言有区别的地方，好记性不如烂笔头，总结一下，和其他语言做个对比。这里之总结差异的地方，具体的语法不做详细的介绍。
+​	种一棵树最好的时间是十年前，其次是现在。
+基础语法 1、变量 ​	1）Go语言变量声明语句不需要使用分号作为分割符
+1 2  var v1 int var v2 string   ​	2）可以将若干个需要声明的变量放在一起
+1 2 3 4  var( v1 int v2 string )   ​	3)变量初始化时候可以和其他语言一样直接在变量后面加等号，等号后面为要初始化的值，也可以使用变量名：=变量值的简单方式
+1 2 3  var v1 int=10//正常的使用方法 var v2=10//编译器可以推导出v2的类型 v3:=10//简单写法 明确表达同时进行变量声明和初始化工作   ​	3）变量赋值 Go语言的变量赋值和多数语言一致，但是Go语言提供了多重赋值的功能，比如下面这个交换i、j变量的语句：
+1  i,j=j,i   ​	在不支持多重赋值的语言中，交换两个变量的值需要引入一个中间变量：
+1  t=i；i=j；j=t;   ​	4)匿名变量
+​	在使用其他语言时，有时候要获取一个值，却因为该函数返回多个值而不得不定义很多没有的变量，Go语言可以借助多重返回值和匿名变量来避免这种写法，使代码看起来更优雅。</div><div class="post-footer">
+        <a href="/godifferentwithothers/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/go/">go</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/%E8%BF%9B%E9%98%B6%E7%AF%87/">进阶篇</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2022-05-30">2022-05-30</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>程序设计</a></span></div><div class="content">一、并发编程 1、并发基础 ​	并发包含几种主流的实现模式：
+ 多进程 是在操作系统层面进行并发的基本模式，同时也是开销最大的模式，在Linux平台上，很多工具链正是采用这种模式在工作。比如某个Web服务器，他会有专门的进程负责网络端口的监听和链接管理，还会有专门的进程负责事务和运算。这种方式的好处在于简单，进程间互不影响。坏处在于系统开销大，因为所有的进程都是由内核管理的。 多线程 大部分OS上都属于系统层面的并发模式，也是我们使用最多最有效的一种模式。目前，我们所见的几乎所有的工具链都会使用这种模式。它比多进程的开销小很多，但是开销依旧比较大，且在高并发模式下，效率会有影响。 基于回调的非阻塞/异步IO 这种架构的诞生实际上来源于多线程模式的危机，在很多高并发服务器开发实践中，使用多线程模式会很快消耗尽服务器的内存和CPU资源，而这中模式通过事件驱动的方式使用异步IO，使服务器持续运转，且尽可能少的使用线程，降低开销，它目前在Node.js中得到了很多实践。但是使用这种模式，编程会比多线程复杂，因为它把流程做了分割，对于问题本身的反应不够自然。 协程（Coroutine） 本质上是一种用户态线程，不需要OS来进行抢占式调度，且在真正的实现中寄存于线程中，因此，系统的开销极小，可以有效提高线程的任务并发性，而避免多线程的缺点。使用协程的优点是编程简单，结构清晰；缺点是需要语言的支持，如果不支持，则需要用户在程序中自行实现调度器，目前原生支持协程的语言还很少。  传统并发模型的缺陷
+​	人的思维模式可以认为是串行的，而且串行的事务具有确定性。线程类并发模式在原先的确定性中引入了不确定性，这种不确定性给程序的行为带来了意外和伤害，也让程序变得不可控。线程之间通信只能采用共享内存的方式，为保证共享内存的有效性，我们采取了很多措施，比如加锁等，来避免死锁或资源竞争。实践证明我们很难做到面面俱到，往往会在工程中遇到各种奇怪的故障和问题。 ​	我们可以将之前的线程加共享内存的方式归纳为”共享内存系统“，虽然共享内存系统是一种有效的并发模式，但它也暴露了众多使用上的问题。计算机科学家在将近40年的研究中又产生了一种新的系统模型，称为消息传递系统
+​	对线程间共享状态的各种操作都被封装在线程之间传递的消息中，这通常要求发送消息时对状态进行复制，并且在消息传递的边界上交出这个状态的所有权。从逻辑上来看，这个操作与共享内存系统中执行的原子更新操作相同，但从物理上来看则非常不同，由于需要执行复制操作，所以大多说消息传递的实现在性能上并不优越，但线程中的状态管理工作通常会变得更为简单。
+2、协程 ​	执行体是个抽象的概念，在OS层面有个概念与之对应，比如OS自己掌握的进程（process），进程内的线程（Thread）以及进程内的协程（coroutine，也叫轻量级线程）。与传统的系统级线程和进程相比，协程最大的优势在于轻量级，可以轻松创建上百万个而不会导致系统资源衰竭，而进程和线程通常也不能超过一万个，这也是协程也叫轻量级线程的原因。
+​	Go语言在语言级别支持轻量级线程，叫goroutine。go语言标准库提供的所有系统调用操作（当然也包括所有同步IO操作），都会让出CPU给其他goroutine。这让事情变得非常简单，让轻量级的切换管理不依赖于系统的线程和进程，也不依赖于CPU的核心数量。
+3、goroutine 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17  package goroutines import ( &#34;fmt&#34; &#34;log&#34; ) func Add(x,y int) { z:=x+y //运行没有输出，主函数调用10个gotoutine，然后返回，这时程序就退出了，而被启动的执行Add(i,j)的goroutine还没来得及执行，所以程序没有任何输出。。。  fmt.Println(&#34;z:&#34;,z) log.Println(&#34;z&#34;,z) } func Demo() { for i:=0;i&lt;10;i++{ go Add(i,i) fmt.Println(i,&#34;i&#34;) } }   4、并发通信 共享数据 ​	共享数据是指多个并发单元分别保持对同一个数据的引用，实现对该数据的共享，被共享的数据可能有多重形式，比如内存数据块，磁盘文件、网络数据等。在实际工作中最常见的无疑是内存了，也就是常说的共享内存。</div><div class="post-footer">
+        <a href="/%E8%BF%9B%E9%98%B6%E7%AF%87/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/go/">go</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2022-05-30">2022-05-30</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>程序设计</a></span></div><div class="content">Go 并发编程 一、并发编程综述 1.1、并发编程基础 ​	串行程序：只能被顺序执行的指令列表
+​	并发程序：可以被并发执行的两个及以上的串行程序的综合体。允许其中的串行程序运行在一个或多个可共享的CPU之上，同时也允许每个串行程序都运行在专为他服务的CPU上。
+​	并行程序：可以在并行的硬件上执行的并发程序。并发程序代表了所有可以实现并发行为的程序。
+​	并发系统：程序与程序之间可以通过协商一致的协议进行通信，并且他们之间是松耦合的。他们可以看做是一个系统（分布式系统）
+​	**并发程序的不确定性 ** : 只有部分代码是有序的
+​	并发程序的内部交互：
+​	共享资源:程序使用一个共享资源，必须先请求该资源并获取对其的访问权，当程序不再需要某个资源的时候，应该放弃对该资源的访问权。一个程序对资源的请求不应该导致其他正在访问该资源的程序中断，而应该等到那个程序释放该资源之后再进行请求。同一时刻，某个资源应该只被一个程序占用。
+​	传递数据:并发程序的内部通信，可以使数据可以不加延迟地发送给数据接收方，即使数据接收方还没有为接收数据做好准备，也不会造成数据发送方的等待，数据会被临时存放在一个称为通信缓存的数据结构中，通信缓存是一种特殊的共享资源，他可以同时被多个程序使用，数据接收方可以在准备就绪后按照数据存入通信缓存的顺序接收他们。
+1.2 、多进程编程 ​	进程间通信（IPC Inter-Process Communication）：
+​	基于通信的IPC方法：数据传输（管道（pipe），消息队列）、共享内存（共享内存区）
+​	基于信号的IPC方法(信号量)
+​	基于同步的IPC方法
+​	Go支持的IPC方法有管道、信号和socket。
+1.2.1 进程 ​	1、进程的定义
+​	一个程序的执行称为一个进程。进程用于描述程序的执行过程。进程和程序是一对概念，分别描述了一个程勋的静态形式和动态特征，进程还是操作系统进行资源分配的一个基本单位。
+​	2、进程的衍生
+​	进程使用fork(一个系统调用函数)可以创建若干个新的进程，其中前者称为后者的父进程，后者称为前者的子进程，每个自进程都是源自他的父进程的一个副本，他会获得父进程的数据段、堆和栈的副本，并与父进程共享代码段。每一份副本都是独立的，子进程对属于它的副本的修改对其父进程和兄弟进程（同父进程）都是不可见的，反之亦然。全盘赋值父进程的数据是一种相当低效的做法，Linux操作系统内核使用写时赋值（Copy on Write，常简称为COW）等技术来提高进程创建的效率。当然，刚创建的子进程也可以通过系统调用exec把新程序加载到自己的内存中，而原先在其内存中的数据段、堆、栈以及代码段都会被替换掉。在这之后，子进程执行的就会是那个刚刚加载进来的新程序
+​	Unix/Linux操作系统都有一个父进程，所有的进程共同组成了一个树状结构。内核启动进程作为进程树的根，负责系统的初始化操作，他是所有进程的祖先，他的父进程就是他自己，如果某一个进程咸鱼他的子进程结束，那么这些子进程将会被内核启动进程“收养”，成为他的直接子进程。
+​	3、进程的标识
+​	为了管理进程，内核必须对每个进程的属性和行为进行详细的记录，包括进程的优先级、状态、虚拟地址范围以及各种访问权限等，这些信息都会被记录在每个进程的描述符中，进程描述符并不是一个简单的符号，而是一个复杂的数据结构。保存在进程描述中的进程ID是进程在操作系统中的唯一标识，其中进程ID为1的进程就是之前提到的内核启动进程。进程ID是一个非负整数且总是顺序的编号，新创建的进程ID总是前一个进程ID递增的结果。此外，进程ID也可以重复使用，当进程ID达到最大值时，内核会从头开始查找限制的进程ID并使用最先找到的哪一个作为新进程的ID，另外，进程描述符中还会包含当前进程的父进程的ID（PPID）
+1 2  pid:=os.Getpid() ​	ppid:=os.Getppid()   ​	PID并不传达于进程有关的任何信息，他只是一个用来唯一标识进程的数字而已。进程的属性信息只包含在内核中与PID对应的进程描述符里。PPID体现了两个进程之间的亲缘关系。我们可以利用这一点做一点事，比如，顺腾摸瓜地查到守护进程的踪迹。
+​	进程ID对内核以外的程序非常有用。内核可以高效地把进程ID转换成对应进程的描述符。我们可以shell命令kill命令终止某个进程ID所对应的进程，还可以通过进程ID找到对应的进程并向它发送信号。
+​	4、进程的状态
+ 可运行状态 可中断的睡眠状态 不可中断的睡眠状态 暂停状态或跟踪状态 僵尸状态 退出状态  ​	5、进程的空间</div><div class="post-footer">
+        <a href="/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/go/">go</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/kubernetes/">Kubernetes</a>
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2022-05-30">2022-05-30</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/kubernetes/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Kubernetes</a></span></div><div class="content">Kubernetes
 1. Kubernetes介绍 1.1 应用部署方式演变 在部署应用程序的方式上，主要经历了三个时代：
@@ -139,25 +192,32 @@ ControllerManager : 负责维护集群的状态，比如程序部署安排、故
         <a href="/kubernetes/">阅读全文</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/k8s/">k8s</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/base/">go语言基础知识</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2022-05-25">2022-05-25</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/go/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>go</a></span></div><div class="content"></div><div class="post-footer">
+        <a href="/gotest/">go语言面向对象编程</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2022-05-25">2022-05-25</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>程序设计</a></span></div><div class="content">1、类型系统 类型系统是指一个语言的类型体系结构，一个典型的类型系统通常包含如下基本内容：
+ 基础类型，如byte、int、bool、float等 复合类型：如数组、结构体、指针等 可以指向任意对象的类型 值语义和引用语义 面向对象 接口  为类型添加方法 1 2 3 4  type Integer int func(a Integer) Less(b Integer) bool{ return a&lt;b }   ​	只有在修改修改对象的时候才必须用指针，他不是go语言的约束，而是一种自然约束
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17  //这里为Integer类型增加了add方法，由于Add方法需要修改对象的值，所以需要用指针引用 func (a *Integer)Add(b Integer){ *a+=b } //调用如下： func main(){ var a Integer=1 var b Integer=1 b.Add(2) fmt.Println(&#34;a=&#34;,a)//a=3  fmt.Println(&#34;b=&#34;,b)//b=1  //类型都是基于值传递的，要想修改变量的值，只能传递指针。 } //如果实现方法时传入的不是指针而是值，那么运行程序得到的结果会是a=1 func (a Integer)Add1(b Integer){ a+=b }   ​</div><div class="post-footer">
+        <a href="/gotest/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/go/">go</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/base/">go语言顺序编程</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2022-05-25">2022-05-25</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>程序设计</a></span></div><div class="content">类型 布尔类型 整型 浮点型 复数类型 字符串 字符类型 数组 数组切片 ​	数组的长度在定义后无法再次修改；数组是值类型，每次传递都将产生一个副本
+​	数组切片（slice）弥补了数组的不足，其数据结构可以抽象为以下三个变量：
+  一个指向原生数组的指针
+  数组切片中的元素个数
+  数组切片已分配的存储空间。
+1.创建数组切片 ​	1）基于数组
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18  // 基于数组的创建切片 	var myArry[10] int=[10]int {1,2,4,3,5,6,7,8,9,10} var myslice [] int=myArry[:5] fmt.Println(&#34;数组元素：&#34;) for _,v:=range myArry{ fmt.Print(v,&#34; &#34;) } fmt.Println() fmt.Println(&#34;切片元素：&#34;) for _,v:=range myslice{ fmt.Print(v,&#34; &#34;) } //基于数组所有元素创建数组切片 	myslice=myArry[:] //基于前五个元素创建数组切片 	myslice=myArry[:5] //基于后五个元素创建数组切片 	myslice=myArry[5:]   ​ 2）直接创建</div><div class="post-footer">
         <a href="/base/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">基础知识</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/gotest/">go学习笔记</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2022-05-24">2022-05-24</time></span></div><div class="content">fsfsfs</div><div class="post-footer">
-        <a href="/gotest/">阅读全文</a></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/golearn/">go学习笔记</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2022-05-24">2022-05-24</time></span></div><div class="content">adada</div><div class="post-footer">
-        <a href="/golearn/">阅读全文</a></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/first/">关于我的信息</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2022-05-19">2022-05-19</time></span></div><div class="content">关于我的情况 热爱技术的菜鸟程序员，平时会分享一些读书笔记和工作生活经验。希望大家多多关注
-微信公众号 心有玲惜遇奇缘 微信扫描下方二维码关注我：
-头条号：心有玲曦遇见你</div><div class="post-footer">
-        <a href="/first/">阅读全文</a></div>
-</article></div></div>
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/go/">go</a></div></div>
+</article><ul class="pagination"><li class="page-item active">
+                    <span class="page-link">
+                        <a href="/">1</a>
+                    </span>
+                </li><li class="page-item ">
+                    <span class="page-link">
+                        <a href="/page/2/">2</a>
+                    </span>
+                </li></ul></div></div>
             </main><footer class="footer">
         <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2021 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">李明奇</a></span><span class="icp-splitter">&nbsp;|&nbsp;</span><br class="icp-br"/>
                     <span class="icp"><div style="width:400px;margin:0 auto; padding:20px 0;"><a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011402012187" style="color:#666" target="_blank" ><img src="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/beian.png" style="float:left;"/>京公网安备 11011402012187号</a>&nbsp;&nbsp;&nbsp;&nbsp; <a style="color:#666" target="_blank" rel="noopener" href="http://beian.miit.gov.cn/">京ICP备2021039774号</a></div></span></div>

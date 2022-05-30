@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>进阶篇 - 心有玲曦遇见你</title><meta name="Description" content="早起的年轻人做的网站"><meta property="og:title" content="进阶篇" />
+<meta property="og:description" content="一、并发编程 1、并发基础 ​	并发包含几种主流的实现模式：
+ 多进程 是在操作系统层面进行并发的基本模式，同时也是开销最大的模式，在Linux平台上，很多工具链正是采用这种模式在工作。比如某个Web服务器，他会有专门的进程负责网络端口的监听和链接管理，还会有专门的进程负责事务和运算。这种方式的好处在于简单，进程间互不影响。坏处在于系统开销大，因为所有的进程都是由内核管理的。 多线程 大部分OS上都属于系统层面的并发模式，也是我们使用最多最有效的一种模式。目前，我们所见的几乎所有的工具链都会使用这种模式。它比多进程的开销小很多，但是开销依旧比较大，且在高并发模式下，效率会有影响。 基于回调的非阻塞/异步IO 这种架构的诞生实际上来源于多线程模式的危机，在很多高并发服务器开发实践中，使用多线程模式会很快消耗尽服务器的内存和CPU资源，而这中模式通过事件驱动的方式使用异步IO，使服务器持续运转，且尽可能少的使用线程，降低开销，它目前在Node.js中得到了很多实践。但是使用这种模式，编程会比多线程复杂，因为它把流程做了分割，对于问题本身的反应不够自然。 协程（Coroutine） 本质上是一种用户态线程，不需要OS来进行抢占式调度，且在真正的实现中寄存于线程中，因此，系统的开销极小，可以有效提高线程的任务并发性，而避免多线程的缺点。使用协程的优点是编程简单，结构清晰；缺点是需要语言的支持，如果不支持，则需要用户在程序中自行实现调度器，目前原生支持协程的语言还很少。  传统并发模型的缺陷
+​	人的思维模式可以认为是串行的，而且串行的事务具有确定性。线程类并发模式在原先的确定性中引入了不确定性，这种不确定性给程序的行为带来了意外和伤害，也让程序变得不可控。线程之间通信只能采用共享内存的方式，为保证共享内存的有效性，我们采取了很多措施，比如加锁等，来避免死锁或资源竞争。实践证明我们很难做到面面俱到，往往会在工程中遇到各种奇怪的故障和问题。 ​	我们可以将之前的线程加共享内存的方式归纳为”共享内存系统“，虽然共享内存系统是一种有效的并发模式，但它也暴露了众多使用上的问题。计算机科学家在将近40年的研究中又产生了一种新的系统模型，称为消息传递系统
+​	对线程间共享状态的各种操作都被封装在线程之间传递的消息中，这通常要求发送消息时对状态进行复制，并且在消息传递的边界上交出这个状态的所有权。从逻辑上来看，这个操作与共享内存系统中执行的原子更新操作相同，但从物理上来看则非常不同，由于需要执行复制操作，所以大多说消息传递的实现在性能上并不优越，但线程中的状态管理工作通常会变得更为简单。
+2、协程 ​	执行体是个抽象的概念，在OS层面有个概念与之对应，比如OS自己掌握的进程（process），进程内的线程（Thread）以及进程内的协程（coroutine，也叫轻量级线程）。与传统的系统级线程和进程相比，协程最大的优势在于轻量级，可以轻松创建上百万个而不会导致系统资源衰竭，而进程和线程通常也不能超过一万个，这也是协程也叫轻量级线程的原因。
+​	Go语言在语言级别支持轻量级线程，叫goroutine。go语言标准库提供的所有系统调用操作（当然也包括所有同步IO操作），都会让出CPU给其他goroutine。这让事情变得非常简单，让轻量级的切换管理不依赖于系统的线程和进程，也不依赖于CPU的核心数量。
+3、goroutine 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17  package goroutines import ( &#34;fmt&#34; &#34;log&#34; ) func Add(x,y int) { z:=x&#43;y //运行没有输出，主函数调用10个gotoutine，然后返回，这时程序就退出了，而被启动的执行Add(i,j)的goroutine还没来得及执行，所以程序没有任何输出。。。  fmt.Println(&#34;z:&#34;,z) log.Println(&#34;z&#34;,z) } func Demo() { for i:=0;i&lt;10;i&#43;&#43;{ go Add(i,i) fmt.Println(i,&#34;i&#34;) } }   4、并发通信 共享数据 ​	共享数据是指多个并发单元分别保持对同一个数据的引用，实现对该数据的共享，被共享的数据可能有多重形式，比如内存数据块，磁盘文件、网络数据等。在实际工作中最常见的无疑是内存了，也就是常说的共享内存。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://%E6%98%8E%E5%A5%87.top/%E8%BF%9B%E9%98%B6%E7%AF%87/" /><meta property="og:image" content="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-05-30T14:58:25+08:00" />
+<meta property="article:modified_time" content="2022-05-30T14:58:25+08:00" /><meta property="og:site_name" content="My cool site" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"/>
+
+<meta name="twitter:title" content="进阶篇"/>
+<meta name="twitter:description" content="一、并发编程 1、并发基础 ​	并发包含几种主流的实现模式：
+ 多进程 是在操作系统层面进行并发的基本模式，同时也是开销最大的模式，在Linux平台上，很多工具链正是采用这种模式在工作。比如某个Web服务器，他会有专门的进程负责网络端口的监听和链接管理，还会有专门的进程负责事务和运算。这种方式的好处在于简单，进程间互不影响。坏处在于系统开销大，因为所有的进程都是由内核管理的。 多线程 大部分OS上都属于系统层面的并发模式，也是我们使用最多最有效的一种模式。目前，我们所见的几乎所有的工具链都会使用这种模式。它比多进程的开销小很多，但是开销依旧比较大，且在高并发模式下，效率会有影响。 基于回调的非阻塞/异步IO 这种架构的诞生实际上来源于多线程模式的危机，在很多高并发服务器开发实践中，使用多线程模式会很快消耗尽服务器的内存和CPU资源，而这中模式通过事件驱动的方式使用异步IO，使服务器持续运转，且尽可能少的使用线程，降低开销，它目前在Node.js中得到了很多实践。但是使用这种模式，编程会比多线程复杂，因为它把流程做了分割，对于问题本身的反应不够自然。 协程（Coroutine） 本质上是一种用户态线程，不需要OS来进行抢占式调度，且在真正的实现中寄存于线程中，因此，系统的开销极小，可以有效提高线程的任务并发性，而避免多线程的缺点。使用协程的优点是编程简单，结构清晰；缺点是需要语言的支持，如果不支持，则需要用户在程序中自行实现调度器，目前原生支持协程的语言还很少。  传统并发模型的缺陷
+​	人的思维模式可以认为是串行的，而且串行的事务具有确定性。线程类并发模式在原先的确定性中引入了不确定性，这种不确定性给程序的行为带来了意外和伤害，也让程序变得不可控。线程之间通信只能采用共享内存的方式，为保证共享内存的有效性，我们采取了很多措施，比如加锁等，来避免死锁或资源竞争。实践证明我们很难做到面面俱到，往往会在工程中遇到各种奇怪的故障和问题。 ​	我们可以将之前的线程加共享内存的方式归纳为”共享内存系统“，虽然共享内存系统是一种有效的并发模式，但它也暴露了众多使用上的问题。计算机科学家在将近40年的研究中又产生了一种新的系统模型，称为消息传递系统
+​	对线程间共享状态的各种操作都被封装在线程之间传递的消息中，这通常要求发送消息时对状态进行复制，并且在消息传递的边界上交出这个状态的所有权。从逻辑上来看，这个操作与共享内存系统中执行的原子更新操作相同，但从物理上来看则非常不同，由于需要执行复制操作，所以大多说消息传递的实现在性能上并不优越，但线程中的状态管理工作通常会变得更为简单。
+2、协程 ​	执行体是个抽象的概念，在OS层面有个概念与之对应，比如OS自己掌握的进程（process），进程内的线程（Thread）以及进程内的协程（coroutine，也叫轻量级线程）。与传统的系统级线程和进程相比，协程最大的优势在于轻量级，可以轻松创建上百万个而不会导致系统资源衰竭，而进程和线程通常也不能超过一万个，这也是协程也叫轻量级线程的原因。
+​	Go语言在语言级别支持轻量级线程，叫goroutine。go语言标准库提供的所有系统调用操作（当然也包括所有同步IO操作），都会让出CPU给其他goroutine。这让事情变得非常简单，让轻量级的切换管理不依赖于系统的线程和进程，也不依赖于CPU的核心数量。
+3、goroutine 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17  package goroutines import ( &#34;fmt&#34; &#34;log&#34; ) func Add(x,y int) { z:=x&#43;y //运行没有输出，主函数调用10个gotoutine，然后返回，这时程序就退出了，而被启动的执行Add(i,j)的goroutine还没来得及执行，所以程序没有任何输出。。。  fmt.Println(&#34;z:&#34;,z) log.Println(&#34;z&#34;,z) } func Demo() { for i:=0;i&lt;10;i&#43;&#43;{ go Add(i,i) fmt.Println(i,&#34;i&#34;) } }   4、并发通信 共享数据 ​	共享数据是指多个并发单元分别保持对同一个数据的引用，实现对该数据的共享，被共享的数据可能有多重形式，比如内存数据块，磁盘文件、网络数据等。在实际工作中最常见的无疑是内存了，也就是常说的共享内存。"/>
+<meta name="application-name" content="LoveIt">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="canonical" href="http://%E6%98%8E%E5%A5%87.top/%E8%BF%9B%E9%98%B6%E7%AF%87/" /><link rel="prev" href="http://%E6%98%8E%E5%A5%87.top/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" /><link rel="next" href="http://%E6%98%8E%E5%A5%87.top/godifferentwithothers/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "进阶篇",
+        "inLanguage": "",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/%E6%98%8E%E5%A5%87.top\/%E8%BF%9B%E9%98%B6%E7%AF%87\/"
+        },"image": ["http:\/\/%E6%98%8E%E5%A5%87.top\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "go","wordcount":  1845 ,
+        "url": "http:\/\/%E6%98%8E%E5%A5%87.top\/%E8%BF%9B%E9%98%B6%E7%AF%87\/","datePublished": "2022-05-30T14:58:25+08:00","dateModified": "2022-05-30T14:58:25+08:00","publisher": {
+            "@type": "Organization",
+            "name": "李明奇","logo": "https:\/\/limingqi.oss-cn-beijing.aliyuncs.com\/mingqi_blog\/img\/logo.jpg"},"author": {
+                "@type": "Person",
+                "name": "李明奇"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="心有玲曦遇见你"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"
+        data-srcset="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg, https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg 1.5x, https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg 2x"
+        data-sizes="auto"
+        alt="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"
+        title="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg" /><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/" title="标签"> 标签 </a><a class="menu-item" href="/categories/" title="分类"> 分类 </a><a class="menu-item" href="/about/" title="关于我"> 关于 </a><a class="menu-item" href="https://github.com/mingqi420" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i> Github </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="心有玲曦遇见你"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"
+        data-srcset="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg, https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg 1.5x, https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg 2x"
+        data-sizes="auto"
+        alt="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"
+        title="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg" /><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="标签">标签</a><a class="menu-item" href="/categories/" title="分类">分类</a><a class="menu-item" href="/about/" title="关于我">关于</a><a class="menu-item" href="https://github.com/mingqi420" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>Github</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">进阶篇</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>程序设计</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-05-30">2022-05-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1845 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 9 分钟&nbsp;<span id="/%E8%BF%9B%E9%98%B6%E7%AF%87/" class="leancloud_visitors" data-flag-title="进阶篇">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一并发编程">一、并发编程</a>
+      <ul>
+        <li><a href="#1并发基础">1、并发基础</a></li>
+        <li><a href="#2协程">2、协程</a></li>
+        <li><a href="#3goroutine">3、goroutine</a></li>
+        <li><a href="#4并发通信">4、并发通信</a>
+          <ul>
+            <li><a href="#共享数据">共享数据</a></li>
+            <li><a href="#消息">消息</a></li>
+          </ul>
+        </li>
+        <li><a href="#5channel">5、channel</a>
+          <ul>
+            <li><a href="#基本用法">基本用法</a></li>
+            <li><a href="#select">select</a></li>
+            <li><a href="#缓冲机制">缓冲机制</a></li>
+            <li><a href="#超时机制">超时机制</a></li>
+            <li><a href="#channel的传递">channel的传递</a></li>
+            <li><a href="#单项channel">单项channel</a></li>
+            <li><a href="#关闭channel">关闭channel</a></li>
+          </ul>
+        </li>
+        <li><a href="#6多核并行化">6、多核并行化</a></li>
+        <li><a href="#7让出时间片">7、让出时间片</a></li>
+        <li><a href="#8同步">8、同步</a>
+          <ul>
+            <li><a href="#同步锁">同步锁</a></li>
+            <li><a href="#全局唯一性操作">全局唯一性操作</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#二网络编程">二、网络编程</a>
+      <ul>
+        <li><a href="#1socket编程">1、Socket编程</a>
+          <ul>
+            <li>
+              <ul>
+                <li><a href="#dial函数">Dial()函数</a></li>
+                <li><a href="#icmp示例程序">ICMP示例程序</a></li>
+                <li><a href="#更丰富的网络通信">更丰富的网络通信</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><a href="#2http编程">2、Http编程</a>
+          <ul>
+            <li>
+              <ul>
+                <li><a href="#http客户端">HTTP客户端</a>
+                  <ul>
+                    <li><a href="#1基本方法">1）基本方法</a></li>
+                    <li><a href="#2高级封装">2）高级封装</a></li>
+                  </ul>
+                </li>
+                <li><a href="#http服务端">HTTP服务端</a>
+                  <ul>
+                    <li><a href="#1处理http请求">1）处理HTTP请求</a></li>
+                    <li><a href="#2处理https请求">2）处理HTTPS请求</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><a href="#3rpc编程">3、RPC编程</a>
+          <ul>
+            <li><a href="#go语言中的rpc支持与处理">GO语言中的RPC支持与处理</a></li>
+            <li><a href="#gob简介">Gob简介</a></li>
+            <li><a href="#设计优雅的rpc接口">设计优雅的RPC接口</a></li>
+          </ul>
+        </li>
+        <li><a href="#4json处理">4、JSON处理</a>
+          <ul>
+            <li><a href="#1编码为json格式">1）编码为JSON格式</a></li>
+            <li><a href="#2解码json数据">2）解码JSON数据</a></li>
+            <li><a href="#3解码未知结构的json数据">3）解码未知结构的JSON数据</a></li>
+            <li><a href="#4json的流式读写">4）JSON的流式读写</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#三安全编程">三、安全编程</a>
+      <ul>
+        <li><a href="#1数字加密">1、数字加密</a></li>
+        <li><a href="#2数字签名">2、数字签名</a></li>
+        <li><a href="#3数字证书">3、数字证书</a></li>
+        <li><a href="#4pki体系">4、PKI体系</a></li>
+        <li><a href="#5go语言的哈希函数">5、Go语言的哈希函数</a></li>
+        <li><a href="#6加密通信">6、加密通信</a></li>
+      </ul>
+    </li>
+    <li><a href="#四工程编程">四、工程编程</a>
+      <ul>
+        <li><a href="#1go命令行工具">1、Go命令行工具</a></li>
+        <li><a href="#2代码风格">2、代码风格</a></li>
+        <li><a href="#3远程import支持">3、远程import支持</a></li>
+        <li><a href="#4工程组织">4、工程组织</a></li>
+        <li><a href="#5文档管理">5、文档管理</a></li>
+        <li><a href="#6工程构建">6、工程构建</a></li>
+        <li><a href="#7跨平台开发">7、跨平台开发</a></li>
+        <li><a href="#8单元测试">8、单元测试</a></li>
+        <li><a href="#9打包分发">9、打包分发</a></li>
+      </ul>
+    </li>
+    <li><a href="#五进阶话题">五、进阶话题</a>
+      <ul>
+        <li><a href="#1反射">1、反射</a></li>
+        <li><a href="#2语言交互性">2、语言交互性</a></li>
+        <li><a href="#3链接符号">3、链接符号</a></li>
+        <li><a href="#4goroutine机理">4、goroutine机理</a></li>
+        <li><a href="#接口机理">接口机理</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="一并发编程">一、并发编程</h1>
+<h2 id="1并发基础">1、并发基础</h2>
+<p>​	并发包含几种主流的实现模式：</p>
+<ul>
+<li>多进程
+是在操作系统层面进行并发的基本模式，同时也是开销最大的模式，在Linux平台上，很多工具链正是采用这种模式在工作。比如某个Web服务器，他会有专门的进程负责网络端口的监听和链接管理，还会有专门的进程负责事务和运算。这种方式的好处在于简单，进程间互不影响。坏处在于系统开销大，因为所有的进程都是由内核管理的。</li>
+<li>多线程
+大部分OS上都属于系统层面的并发模式，也是我们使用最多最有效的一种模式。目前，我们所见的几乎所有的工具链都会使用这种模式。它比多进程的开销小很多，但是开销依旧比较大，且在高并发模式下，效率会有影响。</li>
+<li>基于回调的非阻塞/异步IO
+这种架构的诞生实际上来源于多线程模式的危机，在很多高并发服务器开发实践中，使用多线程模式会很快消耗尽服务器的内存和CPU资源，而这中模式通过事件驱动的方式使用异步IO，使服务器持续运转，且尽可能少的使用线程，降低开销，它目前在Node.js中得到了很多实践。但是使用这种模式，编程会比多线程复杂，因为它把流程做了分割，对于问题本身的反应不够自然。</li>
+<li>协程（Coroutine）
+本质上是一种用户态线程，不需要OS来进行抢占式调度，且在真正的实现中寄存于线程中，因此，系统的开销极小，可以有效提高线程的任务并发性，而避免多线程的缺点。使用协程的优点是编程简单，结构清晰；缺点是需要语言的支持，如果不支持，则需要用户在程序中自行实现调度器，目前原生支持协程的语言还很少。</li>
+</ul>
+<p><strong>传统并发模型的缺陷</strong></p>
+<p>​	人的思维模式可以认为是串行的，而且串行的事务具有确定性。线程类并发模式在原先的确定性中引入了不确定性，这种不确定性给程序的行为带来了意外和伤害，也让程序变得不可控。线程之间通信只能采用共享内存的方式，为保证共享内存的有效性，我们采取了很多措施，比如加锁等，来避免死锁或资源竞争。实践证明我们很难做到面面俱到，往往会在工程中遇到各种奇怪的故障和问题。
+​	 我们可以将之前的线程加共享内存的方式归纳为”共享内存系统“，虽然共享内存系统是一种有效的并发模式，但它也暴露了众多使用上的问题。计算机科学家在将近40年的研究中又产生了一种新的系统模型，称为消息传递系统</p>
+<p>​	对线程间共享状态的各种操作都被封装在线程之间传递的消息中，这通常要求发送消息时对状态进行复制，并且在消息传递的边界上交出这个状态的所有权。从逻辑上来看，这个操作与共享内存系统中执行的原子更新操作相同，但从物理上来看则非常不同，由于需要执行复制操作，所以大多说消息传递的实现在性能上并不优越，但线程中的状态管理工作通常会变得更为简单。</p>
+<h2 id="2协程">2、协程</h2>
+<p>​	执行体是个抽象的概念，在OS层面有个概念与之对应，比如OS自己掌握的进程（process），进程内的线程（Thread）以及进程内的协程（coroutine，也叫轻量级线程）。与传统的系统级线程和进程相比，协程最大的优势在于轻量级，可以轻松创建上百万个而不会导致系统资源衰竭，而进程和线程通常也不能超过一万个，这也是协程也叫轻量级线程的原因。</p>
+<p>​	Go语言在语言级别支持轻量级线程，叫goroutine。go语言标准库提供的所有系统调用操作（当然也包括所有同步IO操作），都会让出CPU给其他goroutine。这让事情变得非常简单，让轻量级的切换管理不依赖于系统的线程和进程，也不依赖于CPU的核心数量。</p>
+<h2 id="3goroutine">3、goroutine</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">goroutines</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;log&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">Add</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="nx">y</span> <span class="kt">int</span><span class="p">)</span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">z</span><span class="o">:=</span><span class="nx">x</span><span class="o">+</span><span class="nx">y</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//运行没有输出，主函数调用10个gotoutine，然后返回，这时程序就退出了，而被启动的执行Add(i,j)的goroutine还没来得及执行，所以程序没有任何输出。。。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;z:&#34;</span><span class="p">,</span><span class="nx">z</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;z&#34;</span><span class="p">,</span><span class="nx">z</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">Demo</span><span class="p">()</span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span><span class="o">:=</span><span class="mi">0</span><span class="p">;</span><span class="nx">i</span><span class="p">&lt;</span><span class="mi">10</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">go</span> <span class="nf">Add</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="s">&#34;i&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="4并发通信">4、并发通信</h2>
+<h3 id="共享数据">共享数据</h3>
+<p>​	共享数据是指多个并发单元分别保持对同一个数据的引用，实现对该数据的共享，被共享的数据可能有多重形式，比如内存数据块，磁盘文件、网络数据等。在实际工作中最常见的无疑是内存了，也就是常说的共享内存。</p>
+<h3 id="消息">消息</h3>
+<p>​	消息机制认为是每个并发单元是自包含的，独立的个体，并且都有自己的变量，但在不同并发单元间这些变量不共享，每个并发单元的输入和输出只有一种，那就是消息，这有点类似于进程的概念，每个进程不会被其他进程打扰，他只是做好自己的工作就好了，不同的进程间靠消息来通信，他们不会共享内存，go语言提供的消息通信机制被称为channel。</p>
+<p><strong>不要通过共享内存来通信，而要通过通信来共享内存</strong></p>
+<h2 id="5channel">5、channel</h2>
+<p>​	channel是go语言在语言级别提供的goroutine间的通信方式。我们可以使用channel在两个或多个goroutine之间传递消息。channel是进程内的通信方式，因此通过channel传递对象的过程和调用函数时的参数传递应为比较一直，比如他也可以传递指针等。如果需要跨进程通信，我们建议采用分布式系统的方法来解决，比如使用Socket或者HTTP等通信协议，Go语言对于网络方面也有非常完美的支持。</p>
+<p>​	channel是类型相关的，也就是说，一个channel只能传递一种类型的值，这个类型需要在声明channel时指定。可以将其理解为是一种类型安全的管道。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">Count</span><span class="p">(</span><span class="nx">ch</span> <span class="kd">chan</span> <span class="kt">int</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//向对应的channel中写入一个数据，在这个channel被读取之前这个操作时阻塞的。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">ch</span><span class="o">&lt;-</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;counting&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">使用channel实现了类似锁的功能，进而保证了所有goroutine完成后主函数才返回
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//定义一个包含10个channel的数组
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">chs</span><span class="o">:=</span><span class="nb">make</span><span class="p">([]</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span><span class="o">:=</span><span class="mi">0</span><span class="p">;</span><span class="nx">i</span><span class="p">&lt;</span><span class="mi">10</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">chs</span><span class="p">[</span><span class="nx">i</span><span class="p">]=</span><span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//数组中的每个channel分配给10个不同的goroutine
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">go</span> <span class="nf">Count</span><span class="p">(</span><span class="nx">chs</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">_</span><span class="p">,</span><span class="nx">ch</span><span class="o">:=</span><span class="k">range</span><span class="p">(</span><span class="nx">chs</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//从10个channel中依次读取数据，在对应的channel写入数据之前，这个操作也是阻塞的。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="o">&lt;-</span><span class="nx">ch</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="基本用法">基本用法</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//var chanName chan elementType
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">ch</span> <span class="kd">chan</span> <span class="kt">int</span><span class="c1">//声明一个传递类型位int channel
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">m</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span> <span class="kd">chan</span> <span class="kt">bool</span><span class="c1">//声明一个mao，元素是bool类型的channel
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">ch</span><span class="o">:=</span><span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span><span class="c1">//声明并初始化一个int型的名为ch的channel
+</span></span></span><span class="line"><span class="cl"><span class="c1">//将一个数据写入（发送）至channel
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">ch</span><span class="o">&lt;-</span><span class="nx">value</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//向chnnel写入数据通常会导致程序阻塞，知道由其他goroutine从这个channel中读取数据，
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">value</span><span class="o">:=&lt;-</span><span class="nx">ch</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//如果channel之前没有写入数据，那么从channel中读取数据也会导致程序阻塞，知道channel中被写入数据为止。
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="select">select</h3>
+<p>​	select的用法和switch语言非常类似，由select开始一个新的选择块，每个选择条件由case语句来描述。与switch语句可以选择任何可使用相等比较的条件相比，select由比较多的限制，其中最大的一条限制就是每个case语句必须是一个IO操作，大致结构如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">select</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">chan1</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//如果chan1成功读取到数据，则执行该case处理语句
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">case</span> <span class="nx">chan2</span><span class="o">&lt;-</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//如果成功向chan2写入数据，则执行该case处理语句
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">default</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//如果上面都没有成功，则进入default
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">ch</span><span class="o">:=</span><span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//死循环，一个随机向ch中写入一个0或者1的过程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">for</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">select</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nx">ch</span><span class="o">&lt;-</span><span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="nx">ch</span><span class="o">&lt;-</span><span class="mi">1</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">i</span><span class="o">:=&lt;-</span><span class="nx">ch</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;接收到数据：&#34;</span><span class="p">,</span><span class="nx">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="缓冲机制">缓冲机制</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//创建一个大小为1024的int类型channel,即使没有读取方，写入方也可以一直往channel里写入，在缓冲区被填完之前都不会阻塞
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">c</span><span class="o">:=</span><span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span><span class="mi">1024</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//读取数据与非缓冲channel完全一致，也可以使用range关键字
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">for</span> <span class="nx">i</span><span class="o">:=</span><span class="k">range</span> <span class="nx">c</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;接收到数据：&#34;</span><span class="p">,</span><span class="nx">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="超时机制">超时机制</h3>
+<p>​	go语言没有提供直接的超时处理机制，但是可以使用select机制，虽然它不是专门为超时设计的，但是却能很方便的解决超时问题，因为select的特点是只要其中一个case已经完成，程序就会继续往下执行，而不会考虑其他cese的情况</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//首先，我们实现并执行一个匿名的超时等待函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">timeout</span><span class="o">:=</span><span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">bool</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">go</span> <span class="kd">func</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span><span class="c1">//等待1s
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">timeout</span><span class="o">&lt;-</span><span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="p">}()</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//然后我们把timeout这个channel利用起来
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">select</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="o">&lt;-</span><span class="nx">ch</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//从ch中取到数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">case</span> <span class="o">&lt;-</span><span class="nx">timeout</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//一直没有从ch中取到数据，但是从timeout中读取到数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这样使用select机制可以避免永久等待的问题，因为程序会在timeout中获取到一个数据后继续自行，无论对ch读取是否还处于等待状态，从而达到1s超时的效果。</p>
+<p>​	这种写法看起来是一种小技巧，但却是在Go语言开发中避免channel通信超时的最有效的方法，在实际的开发中，这种写法也需要被合理利用起来，从而有效地提高代码质量。。。</p>
+<h3 id="channel的传递">channel的传递</h3>
+<p>​	在Go语言中channel本身也是一个原生类型，与map之类的类型地位一样，因此channel本身在定义后也可以通过channel 来传递</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//采用管道设计，这样可以比较容易以插件的方式增加数据的处理流程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">PipeData</span> <span class="kd">struct</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">value</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">handler</span> <span class="kd">func</span><span class="err">（</span><span class="kt">int</span><span class="err">）</span><span class="kt">int</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">next</span> <span class="kd">chan</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//处理函数，我们只要定义一系列的PipeData的数据结构并一起传递给这个函数，就可以达到流式处理函数的目的。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">handle</span><span class="p">(</span><span class="nx">queue</span> <span class="kd">chan</span> <span class="o">*</span><span class="nx">PipeData</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="nx">data</span><span class="p">:</span><span class="k">range</span> <span class="nx">queue</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">data</span><span class="p">.</span><span class="nx">next</span><span class="o">&lt;-</span><span class="nx">data</span><span class="p">.</span><span class="nf">handler</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	与Go语言接口的非侵入式类似，channel这个特定也可以大大降低开发者的心之成本，用一些比较简单却使用的方式来达成在其他语言中需要众多技巧才能达到的效果。</p>
+<h3 id="单项channel">单项channel</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">ch1</span> <span class="kd">chan</span> <span class="kt">int</span><span class="c1">//正常的channel，不是单向的
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">ch2</span> <span class="kd">chan</span><span class="o">&lt;-</span> <span class="kt">float64</span><span class="c1">//只能用于写float64数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">ch3</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kt">int</span><span class="c1">//只能用于读取int数据
+</span></span></span><span class="line"><span class="cl"><span class="c1">//初始化  通过类型转换
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">ch4</span><span class="o">:=</span><span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">ch5</span><span class="o">:=&lt;-</span><span class="kd">chan</span> <span class="nb">int</span><span class="p">(</span><span class="nx">ch4</span><span class="p">)</span><span class="c1">//单项读取channel
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">ch6</span><span class="o">:=</span><span class="kd">chan</span><span class="o">&lt;-</span><span class="nb">int</span><span class="p">(</span><span class="nx">ch4</span><span class="p">)</span><span class="c1">//单项写入channel
+</span></span></span><span class="line"><span class="cl"><span class="c1">//除非这个函数的使用者无耻的使用了类型转换，否则这个函数就不会因为各种原因而对ch进行写，避免在ch中出现非期望的数据，从而很好的实践最小权限原则。。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">Parse</span><span class="p">(</span><span class="nx">ch</span><span class="o">&lt;-</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="nx">value</span><span class="o">:=</span><span class="k">range</span> <span class="nx">ch</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Parse value:&#34;</span><span class="p">,</span><span class="nx">value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="关闭channel">关闭channel</h3>
+<p>使用Go语言内置的close()函数即可</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nb">close</span><span class="p">(</span><span class="nx">ch</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如何判断一个channel是否已经被关闭？我们可以在读取时候使用多重返回值的方式</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">x</span><span class="p">,</span><span class="nx">ok</span><span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">ch</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="6多核并行化">6、多核并行化</h2>
+<p>Runtime.GOMAXPROCS(16)//设置使用16个CPU核心。</p>
+<p>NumCPU()获取核心数</p>
+<h2 id="7让出时间片">7、让出时间片</h2>
+<p>​	我们可以在每个goroutine中控制何时主动出让时间片给其他goroutine，这里可以使用runtime包中的Gosched()函数实现。</p>
+<h2 id="8同步">8、同步</h2>
+<h3 id="同步锁">同步锁</h3>
+<p>​	Go语言中的sync包提供了两种锁类型：sync.Mutex和sync.RWMutex,Mutex是最简单的一种锁，同时也比较暴力，当一个goroutine获得了Mutex后，其他goroutine就只能乖乖等到这个goroutine释放该Mutex，RWMutex相对友好一点，是经典的单写多读模型。在读锁占用的情况下会阻止写，但不阻止读，也就是多个goroutine可同时获取读锁（调用Rlock方法；而写锁调用lock方法）会阻止任何其他goroutine（无论读和写）进来，整个锁相当于该goroutine独占，从RWMutex的实现来看，其实组合了Mutex</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">RWMutex</span> <span class="kd">struct</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">w</span> <span class="nx">Mutex</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">writerSem</span> <span class="kt">uint32</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">readerSem</span> <span class="kt">uint32</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">readerCount</span> <span class="kt">int32</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">readerWait</span> <span class="kt">int32</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//对于这两种锁类型，任何一个Lock()或RLock()均需要保证对应由Unlock()或RUnlock()调用与之对应，否则可能导致等待该锁的所有goroutine处于饥饿状态，甚至可能导致死锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="mi">1</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">foo</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">  <span class="mf">1.</span><span class="nf">Lock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">  <span class="k">defer</span> <span class="mf">1.</span><span class="nf">Unlock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//do Something
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="全局唯一性操作">全局唯一性操作</h3>
+<p>​	对于从全局的角度只需要运行一次的代码，比如全局初始化操作，Go语言提供了一个Once类型来保证全局唯一性操作：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">a</span> <span class="kt">string</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">once</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">setuo</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">a</span><span class="p">=</span><span class="s">&#34;hello world&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">doprint</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl"> <span class="c1">// once的Do方法可以保证在全局范围内只调用指定的函数一次，而所有其他goroutine在调用此语句时，就会先被阻塞，直至全局唯一的once.Do调用结束后才继续。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="nx">setup</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">twoprint</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">  <span class="k">go</span> <span class="nf">doprint</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">  <span class="k">go</span> <span class="nf">doprint</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	为了更好控制并行中的原子性操作，sync包中还包含一个atomic子包，它提供了对于一些基础数据类型的原子操作函数。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//就提供了比较和交换两个uint64类型数据的操作，这让开发者无需再为这样的操作专门添加Lock操作。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">CompareAndSwapUnit64</span><span class="p">(</span><span class="nx">val</span> <span class="o">*</span><span class="kt">uint64</span><span class="p">,</span><span class="nx">old</span><span class="p">,</span><span class="nx">new</span> <span class="kt">uint64</span><span class="p">)(</span><span class="nx">swapped</span> <span class="kt">bool</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="二网络编程">二、网络编程</h1>
+<h2 id="1socket编程">1、Socket编程</h2>
+<p>​	以前我们使用Socket编程时，会按照如下步骤展开：</p>
+<p>​	1）建立Socket：使用socket()函数。</p>
+<p>​	2）绑定Socket：适应bind()函数.</p>
+<p>​	3）监听：使用listen()函数。或者链接：使用connect()函数。</p>
+<p>​	4）接受链接：使用accept()函数。</p>
+<p>​	5）接收：使用receive()函数，或者发送：使用send()函数</p>
+<p>​	Go语言标准库对此过程进行了封装和抽象。无论我们期望使用什么协议建立怎样的形式的链接，都只需要调用net.Dial()函数。</p>
+<h4 id="dial函数">Dial()函数</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">conn</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">net</span><span class="p">.</span><span class="nf">Dial</span><span class="p">(</span><span class="s">&#34;tcp&#34;</span><span class="p">,</span><span class="s">&#34;www.baidu.com:80&#34;</span><span class="p">)</span><span class="c1">//tcp链接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">conn1</span><span class="p">,</span><span class="nx">err1</span><span class="o">:=</span><span class="nx">net</span><span class="p">.</span><span class="nf">Dial</span><span class="p">(</span><span class="s">&#34;udp&#34;</span><span class="p">,</span><span class="s">&#34;www.baidu.com:80&#34;</span><span class="p">)</span><span class="c1">//udp链接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">conn2</span><span class="p">,</span><span class="nx">err2</span><span class="o">:=</span><span class="nx">net</span><span class="p">.</span><span class="nf">Dial</span><span class="p">(</span><span class="s">&#34;ip4:ipcm&#34;</span><span class="p">,</span><span class="s">&#34;www.baidu.com:80&#34;</span><span class="p">)</span><span class="c1">//icmp链接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">conn3</span><span class="p">,</span><span class="nx">err3</span><span class="o">:=</span><span class="nx">net</span><span class="p">.</span><span class="nf">Dial</span><span class="p">(</span><span class="s">&#34;ip4:1&#34;</span><span class="p">,</span><span class="s">&#34;www.baidu.com:80&#34;</span><span class="p">)</span><span class="c1">//ICMP使用协议号。
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	目前，Dial()函数支持如下集中网络协议：</p>
+<p>​	tcp、tcp4、tcp6、udp、udp4、udp6、ip、Ip4和ip6</p>
+<p>​	在成功建立链接后，我们就可以进行数据的发送和接收，发送数据时，使用conn的Write()成员方法，接收数据时使用Read()方法</p>
+<h4 id="icmp示例程序">ICMP示例程序</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">IpcmDemo</span><span class="p">()</span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">)</span><span class="o">!=</span><span class="mi">2</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Usage&#34;</span><span class="p">,</span><span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s">&#34;host&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">os</span><span class="p">.</span><span class="nf">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">service</span><span class="o">:=</span><span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">conn</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">net</span><span class="p">.</span><span class="nf">Dial</span><span class="p">(</span><span class="s">&#34;ip4:icmp&#34;</span><span class="p">,</span><span class="nx">service</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">CheckError</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">msg</span> <span class="p">[</span><span class="mi">512</span><span class="p">]</span><span class="kt">byte</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">msg</span><span class="p">[</span><span class="mi">0</span><span class="p">]=</span><span class="mi">8</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">msg</span><span class="p">[</span><span class="mi">1</span><span class="p">]=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">msg</span><span class="p">[</span><span class="mi">2</span><span class="p">]=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">msg</span><span class="p">[</span><span class="mi">3</span><span class="p">]=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">msg</span><span class="p">[</span><span class="mi">4</span><span class="p">]=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">msg</span><span class="p">[</span><span class="mi">5</span><span class="p">]=</span><span class="mi">13</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">msg</span><span class="p">[</span><span class="mi">6</span><span class="p">]=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">msg</span><span class="p">[</span><span class="mi">7</span><span class="p">]=</span><span class="mi">37</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">len</span><span class="o">:=</span><span class="mi">8</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">check</span><span class="o">:=</span><span class="nf">checkSum</span><span class="p">(</span><span class="nx">msg</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nx">len</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">msg</span><span class="p">[</span><span class="mi">2</span><span class="p">]=</span><span class="nb">byte</span><span class="p">(</span><span class="nx">check</span> <span class="o">&gt;&gt;</span><span class="mi">8</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">msg</span><span class="p">[</span><span class="mi">3</span><span class="p">]=</span><span class="nb">byte</span><span class="p">(</span><span class="nx">check</span> <span class="o">&amp;</span> <span class="mi">255</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">_</span><span class="p">,</span><span class="nx">err</span><span class="p">=</span><span class="nx">conn</span><span class="p">.</span><span class="nf">Write</span><span class="p">(</span><span class="nx">msg</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nx">len</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">CheckError</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">_</span><span class="p">,</span><span class="nx">err</span><span class="p">=</span><span class="nx">conn</span><span class="p">.</span><span class="nf">Read</span><span class="p">(</span><span class="nx">msg</span><span class="p">[</span><span class="mi">0</span><span class="p">:])</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">CheckError</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Got respose&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">msg</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">==</span><span class="mi">13</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">msg</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">==</span><span class="mi">37</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">os</span><span class="p">.</span><span class="nf">Exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">checkSum</span><span class="p">(</span><span class="nx">msg</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span><span class="kt">uint16</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">sum</span><span class="o">:=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">n</span><span class="o">:=</span><span class="mi">1</span><span class="p">;</span><span class="nx">n</span><span class="p">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="nx">msg</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="nx">n</span><span class="o">+=</span><span class="mi">2</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">sum</span><span class="o">+=</span><span class="nb">int</span><span class="p">(</span><span class="nx">msg</span><span class="p">[</span><span class="nx">n</span><span class="p">])</span><span class="o">*</span><span class="mi">256</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="nx">msg</span><span class="p">[</span><span class="nx">n</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">sum</span><span class="p">=(</span><span class="nx">sum</span><span class="o">&gt;&gt;</span><span class="mi">16</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="nx">sum</span> <span class="o">&amp;</span> <span class="mh">0Xffff</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">sum</span> <span class="o">+=</span><span class="p">(</span><span class="nx">sum</span><span class="o">&gt;&gt;</span><span class="mi">16</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">answer</span> <span class="kt">uint16</span> <span class="p">=</span><span class="nb">uint16</span><span class="p">(^</span><span class="nx">sum</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">answer</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">CheckError</span><span class="p">(</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="nx">err</span><span class="o">!=</span><span class="kc">nil</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span><span class="p">,</span><span class="s">&#34;Fatal error&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">.</span><span class="nf">Error</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	  <span class="nx">os</span><span class="p">.</span><span class="nf">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">readFully</span><span class="p">(</span><span class="nx">conn</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Conn</span><span class="p">)</span> <span class="p">([]</span><span class="kt">byte</span><span class="p">,</span><span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">defer</span> <span class="nx">conn</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">result</span><span class="o">:=</span><span class="nx">bytes</span><span class="p">.</span><span class="nf">NewBuffer</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">buf</span> <span class="p">[</span><span class="mi">512</span><span class="p">]</span><span class="kt">byte</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">n</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">conn</span><span class="p">.</span><span class="nf">Read</span><span class="p">(</span><span class="nx">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">:])</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">result</span><span class="p">.</span><span class="nf">Write</span><span class="p">(</span><span class="nx">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">:])</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">err</span><span class="o">!=</span><span class="kc">nil</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">if</span> <span class="nx">err</span><span class="o">==</span><span class="nx">io</span><span class="p">.</span><span class="nx">EOF</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="k">break</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">result</span><span class="p">.</span><span class="nf">Bytes</span><span class="p">(),</span><span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>TCP示例程序</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">TCPdemo</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">)</span><span class="o">!=</span><span class="mi">2</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stderr</span><span class="p">,</span><span class="s">&#34;Usage:host:port&#34;</span><span class="p">,</span><span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">os</span><span class="p">.</span><span class="nf">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">service</span><span class="o">:=</span><span class="nx">os</span><span class="p">.</span><span class="nx">Args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">conn</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">net</span><span class="p">.</span><span class="nf">Dial</span><span class="p">(</span><span class="s">&#34;tcp&#34;</span><span class="p">,</span><span class="nx">service</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">CheckError</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">_</span><span class="p">,</span><span class="nx">err</span><span class="p">=</span><span class="nx">conn</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;HEAD / HTTP/1.0\r\n\r\n&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">CheckError</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">result</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nf">readFully</span><span class="p">(</span><span class="nx">conn</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">CheckError</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nb">string</span><span class="p">(</span><span class="nx">result</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">os</span><span class="p">.</span><span class="nf">Exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="更丰富的网络通信">更丰富的网络通信</h4>
+<p>​	实际上，Dial()函数是对DialTCP()、DialUDP()、DialIP()、DialUnix()的封装，我们也可以直接调用这写函数，他们的功能是一致的，这些函数的原型如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">DialTCP</span><span class="p">(</span><span class="nx">net</span> <span class="kt">string</span><span class="p">,</span><span class="nx">laddr</span><span class="p">,</span><span class="nx">raddr</span><span class="p">,</span><span class="o">*</span><span class="nx">TCPAddr</span><span class="p">)(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">TCPConn</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">DialUDP</span><span class="p">(</span><span class="nx">net</span> <span class="kt">string</span><span class="p">,</span><span class="nx">laddr</span><span class="p">,</span><span class="nx">raddr</span><span class="p">,</span><span class="o">*</span><span class="nx">UDPAddr</span><span class="p">)(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">UDPConn</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">DialTCP</span><span class="p">(</span><span class="nx">netProto</span> <span class="kt">string</span><span class="p">,</span><span class="nx">laddr</span><span class="p">,</span><span class="nx">raddr</span><span class="p">,</span><span class="o">*</span><span class="nx">IPAddr</span><span class="p">)(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">IPConn</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">DialTCP</span><span class="p">(</span><span class="nx">net</span> <span class="kt">string</span><span class="p">,</span><span class="nx">laddr</span><span class="p">,</span><span class="nx">raddr</span><span class="p">,</span><span class="o">*</span><span class="nx">UnixAddr</span><span class="p">)(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">UnixConn</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">net</span><span class="p">.</span><span class="nf">ResolveTCPAddr</span><span class="p">()</span><span class="c1">//用于解析地址和端口号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">net</span><span class="p">.</span><span class="nf">DialTCP</span><span class="p">()</span><span class="c1">//用于建立链接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nx">net</span><span class="p">.</span><span class="nf">ParseIP</span><span class="p">()</span><span class="c1">//用于验证有效性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">IPv4Mask</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">,</span><span class="nx">d</span> <span class="kt">byte</span><span class="p">)</span><span class="nx">IPMask</span><span class="c1">//创建子网掩码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">ip</span> <span class="nx">IP</span><span class="p">)</span><span class="nf">DefaultMask</span><span class="p">()</span> <span class="nx">IPMask</span> <span class="c1">//获取默认子网掩码
+</span></span></span><span class="line"><span class="cl"><span class="c1">//根据域名查找Ip
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">ResolveIPAddr</span><span class="p">(</span><span class="nx">net</span><span class="p">,</span><span class="nx">addr</span> <span class="kt">string</span><span class="p">)(</span><span class="o">*</span><span class="nx">IPAddr</span><span class="p">,</span><span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">LookupHost</span><span class="p">(</span><span class="nx">name</span> <span class="kt">string</span><span class="p">)(</span><span class="nx">cname</span> <span class="kt">string</span><span class="p">,</span><span class="nx">addrs</span> <span class="p">[]</span><span class="kt">string</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="2http编程">2、Http编程</h2>
+<p>​	HTTP(HyperText Transfer Protocol,超文本传输协议)是互联网上应用最为广泛的一种网络协议，定义了客户端和服务端之间请求与相应的传输标准。</p>
+<p>​	Go语言标准库内建提供了net/http包，涵盖了HTTP客户端和服务端的具体实现，使用net/http包，我们可以很方便地编写HTTP客户端或服务端的程序。</p>
+<h4 id="http客户端">HTTP客户端</h4>
+<p>​	Go内置的net/http包提供了最简洁的HTTP客户端实现，我们无需借助第三方网络通信库(比如libcurl)就可以直接使用HTTP中用的最多的GET和POST方式请求数据。</p>
+<h5 id="1基本方法">1）基本方法</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Client</span><span class="p">)</span><span class="nf">Get</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">Response</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Client</span><span class="p">)</span><span class="nf">Post</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">,</span><span class="nx">bodyType</span> <span class="kt">string</span><span class="p">,</span><span class="nx">body</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span><span class="p">)(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">Response</span><span class="p">,</span><span class="nx">err</span> <span class="nx">erro</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Client</span><span class="p">)</span><span class="nf">PostForm</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">,</span><span class="nx">data</span> <span class="nx">url</span><span class="p">.</span><span class="nx">Values</span><span class="p">)(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">Response</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Client</span><span class="p">)</span><span class="nf">Head</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">Response</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Client</span><span class="p">)</span><span class="nf">do</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">Response</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>http.Get()</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//请求一个网站首页
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">resp</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">http</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;http://baidu.com&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">err</span><span class="o">!=</span><span class="kc">nil</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//处理错误
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">return</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">defer</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nb">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//将其网页内容打印到标准输出流中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">io</span><span class="p">.</span><span class="nf">Copy</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span><span class="p">,</span><span class="nx">resp</span><span class="p">.</span><span class="nx">body</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>http.Post()</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//该方法需要三个参数
+</span></span></span><span class="line"><span class="cl"><span class="c1">//1、请求目标的URL 2、将要POST数据的资源类型 3、数据的比特流（[]byte）
+</span></span></span><span class="line"><span class="cl"><span class="c1">//下面的示例代码演示了如何上传一张图片
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">resp</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">http</span><span class="p">.</span><span class="nf">Post</span><span class="p">(</span><span class="s">&#34;http://example.com/upload&#34;</span><span class="p">,</span><span class="s">&#34;image/jpeg&#34;</span><span class="p">,</span><span class="o">&amp;</span><span class="nx">imageDataBuff</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">err</span><span class="o">!=</span><span class="kc">nil</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//处理错误
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">return</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// todo
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>http.PostForm()
+http.PostForm()方法实现了标准编码为application/x-www-form-form-urlencoded的表单提交，下面的示例代码模拟HTML表单提交一篇新文章：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">resp</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">http</span><span class="p">.</span><span class="nf">PostForm</span><span class="p">(</span><span class="s">&#34;http://example.com/posts&#34;</span><span class="p">,</span><span class="nx">url</span><span class="p">.</span><span class="nx">Values</span><span class="p">{</span><span class="s">&#34;title&#34;</span><span class="p">:{</span><span class="s">&#34;article title&#34;</span><span class="p">},</span><span class="s">&#34;content&#34;</span><span class="p">:{</span><span class="s">&#34;article body&#34;</span><span class="p">}})</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">err</span><span class="o">!=</span><span class="kc">nil</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//处理错误
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">return</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// todo
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>http.Head()
+HTTP中的Head请求方式表明只请求目标URL的头部信息，即HTTPHead而不返回HTTPBody。Go内置的net/http包同样也提供了http.Head()方法。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//请求网页的HTTPHead信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">resp</span><span class="p">.</span><span class="nx">err</span><span class="o">:=</span><span class="nx">http</span><span class="p">.</span><span class="nf">Head</span><span class="p">(</span><span class="s">&#34;http://example.com&#34;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>(*http.Client).Do()
+在多说情况下，http.Get()和http.PostForm()就可以满足需求，但是如果我们发起的HTTP请求需要更多的定制信息，我们需要设定一些自定义的Http Head字段，比如：
+1）设定自定义的&quot;User-Agent&quot;,而不是默认的”Go http package“
+2)传递Cookie
+此时我们就使用net/http包http.Clent对象的Do()方法实现：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">req</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">http</span><span class="p">.</span><span class="nf">NewRequest</span><span class="p">(</span><span class="s">&#34;GET&#34;</span><span class="p">,</span><span class="s">&#34;http://example.com&#34;</span><span class="p">,</span><span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//todo
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">req</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">&#34;User-Agent&#34;</span><span class="p">,</span><span class="s">&#34;GoBook Custom User-Agent&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//todo
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">client</span><span class="o">:=&amp;</span><span class="nx">http</span><span class="p">.</span><span class="nx">Client</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">resp</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">client</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="nx">reg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//..
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h5 id="2高级封装">2）高级封装</h5>
+<p>​	Go语言标准库也暴露了比较底层的HTTP相关库，让开发者可以基于这些库灵活定制HTTP服务器和使用HTTP服务。</p>
+<ul>
+<li>
+<p>自定义http.Client
+前面介绍的http.Get()&hellip;&hellip;.其实都是建立在http.DefaultClent的基础上进行调用的，比如http.Get()等价于http.DefaultClient.Get(),依次类推。
+在net/http包中，提供了Client类型：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Client</span> <span class="kd">struct</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//Transport用于确定HTTP请求的创建机制
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//如果为空，将会使用DefaultTransPort
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">Transport</span> <span class="nx">RoundTripper</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//CheckRedirect自定义重定向
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//如果不为空，客户端将在跟踪HTTP重定向前调用该函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//两个参数req和via分别为即将发起的请求和已发请求的所有请求，最早的已发起请求在最前面，如果CheckRedirect返回错误，客户端将直接返回错误，不会再发起该请求。如果CheckRedirect为空，Client将采用一种确认策略，将在10个连续请求后终止。 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">CheckRedirect</span> <span class="kd">func</span><span class="p">(</span><span class="nx">req</span> <span class="o">*</span><span class="nx">Request</span><span class="p">,</span><span class="nx">via</span><span class="p">[]</span><span class="o">*</span><span class="nx">Request</span><span class="p">)</span><span class="kt">error</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//如果Jar为空，Cookie将不会在请求中发送，并在响应中被忽略。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">Jar</span> <span class="nx">CookieJar</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>其中Transport类型必须实现http.RoundTripper接口。Transport指定了一个HTTP请求的运行机制，如果不指定Transport，默认会使用http.DefaultTransport,这意味着http.Transport也是可以自定义的。net/http包中的http.Transport实现了http.RoundTripper接口。
+CheckRedirect函数指定处理重定向的策略，当使用HTTP Client的Get()或者Head()方法发送HTTP请求时，若响应返回的状态30x(比如301/302/303/307),HTTPClient会遵循跳转规则之前先调用这个CheckRedirect函数。
+Jar用于在HTTPClient中设定的Cookie，Jar的类型必须实现了http.CookieJar接口，该接口预定义了SetCookies()和Cookies()两个方法，如果HTTPClient中没有设定Jar，Cookie将被忽略而不会发到客户端，实际上，我们一般都用http.SetCookie()方法来设定Cookie。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">client</span><span class="o">:=&amp;</span><span class="nx">http</span><span class="p">.</span><span class="nx">Clent</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">CheckRedirect</span><span class="p">:</span><span class="nx">redirectPolicyFunc</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">resp</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">client</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;http://example.com&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">req</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">http</span><span class="p">.</span><span class="nf">NewRequest</span><span class="p">(</span><span class="s">&#34;GET&#34;</span><span class="p">,</span><span class="s">&#34;http://example.com&#34;</span><span class="p">,</span><span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//todo
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">req</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">&#34;User-Agent&#34;</span><span class="p">,</span><span class="s">&#34;GoBook Custom User-Agent&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">req</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="s">&#34;IF-None-Match&#34;</span><span class="p">,</span><span class="err">&#39;</span><span class="s">&#34;W/TheFileEtag&#34;</span><span class="err">&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">resp</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">client</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="nx">reg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//...
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>自定义http.TransPort</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Transport</span> <span class="kd">struct</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//Proxy指定用于针对特定请求返回代理的函数，如果该函数返回一个非空的错误，请求将终止并返回该错误，如果Proxy为空或者返回一个空的URL指针，并不使用代理。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">Proxy</span> <span class="kd">func</span><span class="p">(</span><span class="o">*</span><span class="nx">Request</span><span class="p">)(</span><span class="o">*</span><span class="nx">url</span><span class="p">.</span><span class="nx">URL</span><span class="p">,</span><span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//Dial指定用于创建TCP连接的dial()函数,如果Dial为空，将默认使用net.Dial()函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">Dial</span> <span class="kd">func</span><span class="p">(</span><span class="nx">net</span><span class="p">,</span><span class="nx">addr</span> <span class="kt">string</span><span class="p">)(</span><span class="nx">c</span> <span class="nx">net</span><span class="p">.</span><span class="nx">Conn</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//TLSClientConfig指定用于tls.Client的TLS配置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//如果为空则使用默认配置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">TLSClientConfig</span> <span class="o">*</span><span class="nx">tls</span><span class="p">.</span><span class="nx">Config</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//是否取消连接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">DisableKeepAlives</span> <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//是否取消压缩（GZip）默认为false，即启用压缩
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">DisableCompression</span> <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//如果MaxIdleConnsPerHost为非零值，他用于控制每个host所需要保持最大空闲连接数，如果为空，则使用DefaultMaxIdleConnsPerHost
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">MaxIdleConnsPerHost</span> <span class="kt">int</span><span class="c1">//指定与每个请求的目标主机之间的最大非活跃数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//....
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>除了http.Transport类型中定义的公开数据成员之外，同时还提供了几个公开的成员方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//该方法用于关闭所有非活跃的连接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">Transport</span><span class="p">)</span> <span class="nf">CloseIdleConnections</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//该方法可用于注册并启用一个新的传输协议，比如WebSocket的传输协议标准(ws),或者FTP、File协议等
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">Transport</span><span class="p">)</span> <span class="nf">RegisterProtocol</span><span class="p">(</span><span class="nx">scheme</span> <span class="kt">string</span><span class="p">,</span><span class="nx">rt</span> <span class="nx">RoundTripper</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//用于实现http.RoundTrip接口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">Transport</span><span class="p">)</span><span class="nf">RoundTrip</span><span class="p">(</span><span class="nx">req</span> <span class="o">*</span><span class="nx">Request</span><span class="p">)(</span><span class="nx">resp</span> <span class="o">*</span><span class="nx">Respose</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//自定义http.Transport
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">tr</span><span class="o">:=&amp;</span><span class="nx">http</span><span class="p">.</span><span class="nx">Transport</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">TLSClientConfig</span><span class="p">:</span> <span class="o">&amp;</span><span class="nx">tls</span><span class="p">.</span><span class="nx">Config</span><span class="p">{</span><span class="nx">RootCAs</span><span class="p">:</span><span class="nx">pool</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">DisableCompression</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">client</span><span class="o">:=&amp;</span><span class="nx">http</span><span class="p">.</span><span class="nf">Client</span><span class="p">(</span><span class="nx">Transport</span><span class="p">:</span><span class="nx">tr</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">resp</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">client</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;http://example.com&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//Client和Transport在执行多个goroutine的并发过程中都是安全的，单数出于性能考虑，应当创建一次后反复使用。
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>灵活的http.RoundTripper接口</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">RoundTripper</span> <span class="kd">interface</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//RoundTrip执行一个单一的HTTP事务，返回相应的响应信息。实现不应试图去理解相应的内容，如果RoundTrip得到一个响应，无论响应的HTTP状态码如何，都应该将返回的err设置为nil。非空的err只意味着没有成功获取到响应，类似地，RoundTrip也不应试图处理更高级别的协议，比如重定向、认证和Cookies等
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//RoundTrip不应该修改请求内容，除非是为了理解Body内容，每一个请求的URL和Header域都应该被正确初始化。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nf">RoundTrip</span><span class="p">(</span><span class="o">*</span><span class="nx">Response</span><span class="p">,</span><span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//非必要情况下，比应该在RoundTrip()中改写传入的请求体（\*Request）,请求体的内容（比如URL和Head等）必须在传入RoundTrip()之前就已经组织好并完成初始化
+</span></span></span><span class="line"><span class="cl"><span class="c1">//我们可以在默认的http.Transport之上包一层Transport并实现RoundTrip()方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">OurCustomTransport</span> <span class="kd">struct</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Transport</span> <span class="nx">http</span><span class="p">.</span><span class="nx">RoundTripper</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">OurCustomTransport</span><span class="p">)</span><span class="nf">transport</span><span class="p">()</span><span class="nx">http</span><span class="p">.</span><span class="nx">RoundTripper</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="nx">t</span><span class="p">.</span><span class="nx">Transport</span><span class="o">!=</span><span class="kc">nil</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">t</span><span class="p">.</span><span class="nx">Transport</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">http</span><span class="p">.</span><span class="nx">DefaultTransport</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">OurCustomTransport</span><span class="p">)</span> <span class="nf">RoundTrip</span><span class="p">(</span><span class="nx">req</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)(</span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Response</span><span class="p">.</span><span class="kt">error</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//处理一些事情
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//发起HTTP强求
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//添加一些域到rep.Header中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">return</span> <span class="nx">t</span><span class="p">.</span><span class="nf">transport</span><span class="p">().</span><span class="nf">RoundTrip</span><span class="p">(</span><span class="nx">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">OurCustomTransport</span><span class="p">)</span><span class="nf">Client</span><span class="p">()</span><span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Client</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="o">&amp;</span><span class="nx">http</span><span class="p">.</span><span class="nf">Client</span><span class="p">(</span><span class="nx">Transport</span><span class="p">:</span><span class="nx">t</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">t</span><span class="o">:=&amp;</span><span class="nx">OurCustomTransport</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//。。。。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">c</span><span class="o">:=</span><span class="nx">t</span><span class="p">.</span><span class="nf">Client</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">resp</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">c</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="s">&#34;http://example.com&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//。。。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>因为实现了http.RoundTripper接口的代码通常需要在多个goroutine中并发执行，因此我们必须确保实现代码的线程安全性。</p>
+</li>
+<li>
+<p>设计优雅的HTTPClient
+Go语言标准库提供的HTTP Client被设计成上下两层结构，一层是上述提到的http.Client类及其封装的基础方法，我们不妨称其为”<strong>业务层</strong>“，之所以称之为业务层，是因为调用方通常只需关系请求的业务逻辑本身，而无需关心非业务相关的技术细节，这些细节包括：
+1）HTTP底层传输细节</p>
+<p>2）HTTP代理
+3）gzip压缩
+4）连接池及管理
+5）认证（SSL或其他认证）
+之所以HTTP Client可以做到这么好的封装性，是因为HTTP Client在底层抽象了http.RoundTripper接口，而http.Transport实现了该接口，从而能够处理更多的细节，我们不妨将其称为”<strong>传输层</strong>“。HTTP Client在业务层初始化HTTP Method、目标URL、请求参数、请求内容等重要的信息后，经过传输层、传输层在业务层处理的基础上补充其他细节，然后再发起HTTP请求，接收服务端返回的HTTP影响。</p>
+</li>
+</ul>
+<h4 id="http服务端">HTTP服务端</h4>
+<h5 id="1处理http请求">1）处理HTTP请求</h5>
+<p>​		使用net/http包提供的http.ListenAdnServe()方法，可以在指定的地址进行监听，开启一个HTTP。服务端该方法的原型入下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//该方法用于在指定的TCP网络地址addr进行监听，然后调用服务端处理程序来处理传入的连接请求，该方法有两个参数：第一个参数addr即监听地址；第二个参数表示服务端的处理程序，通常为空，这意为着服务端调用http.DefaultServeMux进行处理，而服务端编写的业务逻辑处理程序http.Handle()或http.HandleFunc()默认注入http.DefaultServeMux中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">ListenAndServe</span><span class="p">(</span><span class="nx">addr</span> <span class="kt">string</span><span class="p">,</span><span class="nx">handler</span> <span class="nx">Handler</span><span class="p">)</span><span class="nx">err</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//具体代码：：：
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/foo&#34;</span><span class="p">,</span><span class="nx">fooHandler</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/bar&#34;</span><span class="p">,</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResposeWriter</span><span class="p">,</span><span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="s">&#34;Hello&#34;</span><span class="p">,</span><span class="nx">html</span><span class="p">.</span><span class="nf">EscapeString</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:8080&#34;</span><span class="p">,</span><span class="kc">nil</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//如果想要更多的控制服务端的行为，可以自定义http.Server
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">s</span><span class="o">:=&amp;</span><span class="nx">http</span><span class="p">.</span><span class="nx">Server</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Addr</span><span class="p">:</span> <span class="s">&#34;:8080&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Handle</span><span class="p">:</span> <span class="nx">myHandler</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">ReadTimeOut</span><span class="p">:</span> <span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">WriteTimeOut</span><span class="p">:</span> <span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">MaxHeaderBytes</span><span class="p">:</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">20</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">())</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h5 id="2处理https请求">2）处理HTTPS请求</h5>
+<p>​		使用net/http包提供的http.ListenAdnServeTLS()方法，用于处理HTTPS的连接请求。服务端该方法的原型入下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">和ListenAndServe()一样，区别在于该方法只处于HTTPS请求。此外，服务器上必须存在包含证书和与之匹配的私钥的相关文件，比如certFile对应的SSL证书文件存放路径，keyFile对应证书私钥文件路径。如果证书时由证书颁发机构签署的，certFile参数指定的路径必须是存放在服务器上的经由CA认证过的SSL证书
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">ListenAndServeTLS</span><span class="p">(</span><span class="nx">addr</span> <span class="kt">string</span><span class="p">,</span><span class="nx">certFile</span> <span class="kt">string</span><span class="p">,</span><span class="nx">keyFile</span> <span class="kt">string</span><span class="p">,</span><span class="nx">handler</span> <span class="nx">Handler</span><span class="p">)</span><span class="nx">err</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//具体代码：：：
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/foo&#34;</span><span class="p">,</span><span class="nx">fooHandler</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/bar&#34;</span><span class="p">,</span><span class="kd">func</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResposeWriter</span><span class="p">,</span><span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span><span class="s">&#34;Hello&#34;</span><span class="p">,</span><span class="nx">html</span><span class="p">.</span><span class="nf">EscapeString</span><span class="p">(</span><span class="nx">r</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">Path</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:10443&#34;</span><span class="p">,</span><span class="s">&#34;cer.pem&#34;</span><span class="p">,</span><span class="s">&#34;key.pem&#34;</span><span class="p">,</span><span class="kc">nil</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//如果想要更多的控制服务端的行为，可以自定义http.Server
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">s</span><span class="o">:=&amp;</span><span class="nx">http</span><span class="p">.</span><span class="nx">Server</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Addr</span><span class="p">:</span> <span class="s">&#34;:10443&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Handle</span><span class="p">:</span> <span class="nx">myHandler</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">ReadTimeOut</span><span class="p">:</span> <span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">WriteTimeOut</span><span class="p">:</span> <span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">MaxHeaderBytes</span><span class="p">:</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">20</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;cer.pem&#34;</span><span class="p">,</span><span class="s">&#34;key.pem&#34;</span><span class="p">))</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="3rpc编程">3、RPC编程</h2>
+<p>​	RPC(Remote Procedure Call,远程过程调用)是一种通过网络从远程计算机上请求服务，而不需要了解底层网络细节的应用程序通信协议，RCP协议构建于TCP或UDP，或者是HTTP之上，允许开发者直接调用另一台计算机上的程序，而开发者无需额外地为这个调用过程编写网络通信相关代码，是的开发包括网络分布式程序在内的应用程序更加容易，</p>
+<p>​	RPC采用客户端-服务器（Client/Server）的工作模式，请求程序就是一个客户端（Client），而服务提供程序就是一个服务器（server）。当执行一个远程过程调用时，客户端程序首先发送至一个带有参数的调用信息到服务端，然后等待服务器相应。在服务端，服务进程保持睡眠状态直到客户端的调用信息到达为止。当一个调用信息到达时，服务端获得进程参数，计算出结果，并向客户端发送应答信息，然后等待下一个调用。最后，客户端接收来自服务端的应道信息，获得进程结果，然后调用执行并继续进行。</p>
+<h3 id="go语言中的rpc支持与处理">GO语言中的RPC支持与处理</h3>
+<p>​	在Go语言中，标准库提供的net/rpc包实现了RPC协议需要的相关细节，开发者可以很方便得使用该包编写RPC的服务端和客户端程序，这使得用Go语言开发的多个进程之间变得非常简单。</p>
+<p>​	net/rpc包允许RPC客户端程序通过网络或是其他I/O连接调用一个远端对象的公开方法(必须是大写字母开头，可外部调用的)。在RPC服务端，可将一个对象注册为可访问的服务，之后该对象的公开方法就能够以远程的方式提供访问。一个RPC服务端可以注册多个不同的对象，但不允许注册同一个类型的多个对象。</p>
+<p>​	一个对象中只有满足如下这些条件的方法，才能被RPC服务端设置为可供远程访问：</p>
+<p>1）必须是在对象外部可公开调用的方法（首字母大写）</p>
+<p>2）必须有两个参数，且参数的类型都必须是包外部可以访问的类型或者是Go内建支持的类型</p>
+<p>3）第二个参数必须是一个指针</p>
+<p>4）方法必须返回一个error类型的值</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//T、T1、T1默认会使用Go内置的encoding/gob包进行编码解码
+</span></span></span><span class="line"><span class="cl"><span class="c1">//T1表示由RPC客户端传入的值，T2表示要返回给RPC客户端的结果
+</span></span></span><span class="line"><span class="cl"><span class="c1">//最后返回一个error类型的值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">T</span><span class="p">)</span><span class="nf">MethodName</span><span class="p">(</span><span class="nx">argType</span> <span class="nx">T1</span><span class="p">,</span><span class="nx">replyType</span> <span class="o">*</span><span class="nx">T2</span><span class="p">)</span><span class="kt">error</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	RPC服务端可以通过调用rpc.ServeConn处理单个连接请求。多数情况下，通过TCP或是HTTP在某个网络地址上进行监听来创建该服务是个不错的选择。</p>
+<p>​	在RPC客户端，Go的net/rpc包提供了遍历的rpc.Dial()和rpc.DialGTTP()方法来指定的RPC服务端建立连接，在建立连接之后，Go的net/rpc包允许我们使用同步或者异步的方式接收RPC服务端的处理结果。调用RPC客户端Call()方法进行同步处理，这时候客户端程序按书序执行，只有接收完RPC服务端的处理结果之后才可继续执行后面的程序。当调用RPC客户端的Go()方法时，则可以进行异步处理，RPC客户端程序无需等待服务端的结果即可执行后面的程序，而当接收到RPC服务端的处理结果时，在对其进行相应的处理。无论是调用RPC客户端的Call()或是Go()</p>
+<p>方法，都必须指定要调用的服务及其方法名，以及一个客户端传入参数的引用，还有一个用于结束处理参数的指针。</p>
+<p>​	如果没有明确指明RPC传输过程中使用何种编码解码器，默认使用Go标准库提供的encoding/god包进行数据传输</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">rpcserver</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;errors&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;log&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;net&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="s">&#34;net/rpc&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Args</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">A</span><span class="p">,</span><span class="nx">B</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Quotient</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Quo</span><span class="p">,</span><span class="nx">Rem</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Arith</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">Arith</span><span class="p">)</span><span class="nf">Multiply</span><span class="p">(</span><span class="nx">args</span> <span class="o">*</span><span class="nx">Args</span><span class="p">,</span><span class="nx">reply</span> <span class="o">*</span><span class="kt">int</span><span class="p">)</span>  <span class="kt">error</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="o">*</span><span class="nx">reply</span><span class="p">=</span><span class="nx">args</span><span class="p">.</span><span class="nx">A</span><span class="o">*</span><span class="nx">args</span><span class="p">.</span><span class="nx">B</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">Arith</span><span class="p">)</span><span class="nf">Divide</span><span class="p">(</span><span class="nx">args</span> <span class="o">*</span><span class="nx">Args</span><span class="p">,</span><span class="nx">quo</span> <span class="o">*</span><span class="nx">Quotient</span><span class="p">)</span><span class="kt">error</span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">args</span><span class="p">.</span><span class="nx">B</span><span class="o">==</span><span class="mi">0</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;divide by zero&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">quo</span><span class="p">.</span><span class="nx">Quo</span><span class="p">=</span><span class="nx">args</span><span class="p">.</span><span class="nx">A</span><span class="o">/</span><span class="nx">args</span><span class="p">.</span><span class="nx">B</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">quo</span><span class="p">.</span><span class="nx">Rem</span><span class="p">=</span><span class="nx">args</span><span class="p">.</span><span class="nx">A</span><span class="o">%</span><span class="nx">args</span><span class="p">.</span><span class="nx">B</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//注册服务对象并开启该RPC服务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">RegisterRPC</span><span class="p">()</span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">arith</span><span class="o">:=</span><span class="nb">new</span><span class="p">(</span><span class="nx">Arith</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">rpc</span><span class="p">.</span><span class="nf">Register</span><span class="p">(</span><span class="nx">arith</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">rpc</span><span class="p">.</span><span class="nf">HandleHTTP</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">l</span><span class="p">,</span><span class="nx">e</span><span class="o">:=</span><span class="nx">net</span><span class="p">.</span><span class="nf">Listen</span><span class="p">(</span><span class="s">&#34;tcp&#34;</span><span class="p">,</span><span class="s">&#34;:1234&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">e</span><span class="o">!=</span><span class="kc">nil</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="s">&#34;listen error:&#34;</span><span class="p">,</span><span class="nx">e</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">go</span> <span class="nx">http</span><span class="p">.</span><span class="nf">Serve</span><span class="p">(</span><span class="nx">l</span><span class="p">,</span><span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//建立RPC链接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">ConnectRPC</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">client</span><span class="p">,</span><span class="nx">err</span><span class="o">:=</span><span class="nx">rpc</span><span class="p">.</span><span class="nf">Dial</span><span class="p">(</span><span class="s">&#34;tcp&#34;</span><span class="p">,</span><span class="s">&#34;localhost:1234&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span><span class="o">!=</span><span class="kc">nil</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="s">&#34;dialing:&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">client</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">args</span><span class="o">:=&amp;</span><span class="nx">Args</span><span class="p">{</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">reply</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span><span class="p">=</span><span class="nx">client</span><span class="p">.</span><span class="nf">Call</span><span class="p">(</span><span class="s">&#34;Multiply&#34;</span><span class="p">,</span><span class="nx">args</span><span class="p">,</span><span class="o">&amp;</span><span class="nx">reply</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span><span class="o">!=</span><span class="kc">nil</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="s">&#34;arith error&#34;</span><span class="p">,</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Arith:&#34;</span><span class="p">,</span><span class="nx">args</span><span class="p">.</span><span class="nx">A</span><span class="p">,</span><span class="nx">args</span><span class="p">.</span><span class="nx">B</span><span class="p">,</span><span class="nx">reply</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//异步调用
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">q</span><span class="o">:=</span><span class="nb">new</span><span class="p">(</span><span class="nx">Quotient</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">divCall</span><span class="o">:=</span><span class="nx">client</span><span class="p">.</span><span class="nf">Go</span><span class="p">(</span><span class="s">&#34;Arith:&#34;</span><span class="p">,</span><span class="nx">args</span><span class="p">,</span><span class="o">&amp;</span><span class="nx">q</span><span class="p">,</span><span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">replyCall</span><span class="o">:=&lt;-</span><span class="nx">divCall</span><span class="p">.</span><span class="nx">Done</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">replyCall</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="gob简介">Gob简介</h3>
+<p>​	Gob是Go的一个序列化数据结构的编码解码工具，在Go标准库中内置encoding/gob包以供使用。一个数据结构使用Gob进行序列化之后，能够用于网络传输。与JSON或XML这种基于文本描述的数据交换语言不同，Gob是二进制编码的数据流，并且Gob流是可以自解释的，它保证高效率的同时，也具备完整的表达能力。</p>
+<p>​	作为针对Go的数据结构进行编码和解码的专用序列化方法，这意味着Gob无法跨语言使用，在Go的net/rpc包中，传输数据所需要用到的编码解码器，默认就是Gob，由于Gob仅限于使用Go语言开发的程序，这意味着我们只能用Go的RPC时间进程间通信。然而大多数时候，我们用Go编写的RPC服务端（或客户端），可能更希望他是通用的，与语言无关的，无论是Python、Java或是其他编程语言实现的RPC客户端，均可与之通信。</p>
+<h3 id="设计优雅的rpc接口">设计优雅的RPC接口</h3>
+<p>​	Go语言net/rpc在数据传输前后实现了编码解码器的接口定义，开发人员可以自定义传输的传输方式及RPC服务可客户端之间的交互行为</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// A ClientCodec implements writing of RPC requests and
+</span></span></span><span class="line"><span class="cl"><span class="c1">// reading of RPC responses for the client side of an RPC session.
+</span></span></span><span class="line"><span class="cl"><span class="c1">// The client calls WriteRequest to write a request to the connection
+</span></span></span><span class="line"><span class="cl"><span class="c1">// and calls ReadResponseHeader and ReadResponseBody in pairs
+</span></span></span><span class="line"><span class="cl"><span class="c1">// to read responses. The client calls Close when finished with the
+</span></span></span><span class="line"><span class="cl"><span class="c1">// connection. ReadResponseBody may be called with a nil
+</span></span></span><span class="line"><span class="cl"><span class="c1">// argument to force the body of the response to be read and then
+</span></span></span><span class="line"><span class="cl"><span class="c1">// discarded.
+</span></span></span><span class="line"><span class="cl"><span class="c1">// See NewClient&#39;s comment for information about concurrent access.
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 接口ClientCodec定义了RPC客户端如何在一个RPC会话中发送请求和读取相应数据。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">ClientCodec</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//将一个请求写入到RPC连接中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">WriteRequest</span><span class="p">(</span><span class="o">*</span><span class="nx">Request</span><span class="p">,</span> <span class="nx">any</span><span class="p">)</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//读取服务端的相应信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">ReadResponseHeader</span><span class="p">(</span><span class="o">*</span><span class="nx">Response</span><span class="p">)</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">ReadResponseBody</span><span class="p">(</span><span class="nx">any</span><span class="p">)</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//关闭连接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">Close</span><span class="p">()</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// A ServerCodec implements reading of RPC requests and writing of
+</span></span></span><span class="line"><span class="cl"><span class="c1">// RPC responses for the server side of an RPC session.
+</span></span></span><span class="line"><span class="cl"><span class="c1">// The server calls ReadRequestHeader and ReadRequestBody in pairs
+</span></span></span><span class="line"><span class="cl"><span class="c1">// to read requests from the connection, and it calls WriteResponse to
+</span></span></span><span class="line"><span class="cl"><span class="c1">// write a response back. The server calls Close when finished with the
+</span></span></span><span class="line"><span class="cl"><span class="c1">// connection. ReadRequestBody may be called with a nil
+</span></span></span><span class="line"><span class="cl"><span class="c1">// argument to force the body of the request to be read and discarded.
+</span></span></span><span class="line"><span class="cl"><span class="c1">// See NewClient&#39;s comment for information about concurrent access.
+</span></span></span><span class="line"><span class="cl"><span class="c1">//ServerCodec定义了RPC服务端如何在RPC会话中接受请求并发送响应
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">ServerCodec</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//从一个RPC连接中读取请求信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">ReadRequestHeader</span><span class="p">(</span><span class="o">*</span><span class="nx">Request</span><span class="p">)</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">ReadRequestBody</span><span class="p">(</span><span class="nx">any</span><span class="p">)</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//向该连接中的RPC客户端发送相应
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">WriteResponse</span><span class="p">(</span><span class="o">*</span><span class="nx">Response</span><span class="p">,</span> <span class="nx">any</span><span class="p">)</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Close can be called multiple times and must be idempotent.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nf">Close</span><span class="p">()</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	通过实现上述接口，我们可以自定义数据传输前后的编码解码方式，而不仅仅局限于Gob。同样，可以自定义RPC服务端和客户端的交互行为，实际上，go标准库提供的net/rpc/json包，就是一套实现了这两个结构的JSON-RPC模块。</p>
+<h2 id="4json处理">4、JSON处理</h2>
+<h3 id="1编码为json格式">1）编码为JSON格式</h3>
+<p>​			使用json.Marshall()函数可以对一组数据进行JSON编码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">Marchal</span><span class="p">(</span><span class="nx">v</span> <span class="kd">interface</span><span class="p">{})([]</span><span class="kt">byte</span><span class="p">,</span><span class="kt">error</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​			Go语言大多数数据类型都可以转化为有效的JSON文本，但channel、complex和函数这几中类型除外。如果转化前的数据结构中出现指针，那么将会转化指针所指向的值，如果指针指向的事0值，那么null将化作转化后的结果输出。</p>
+<p>​		在GO中，JSON转化前后数据类型映射如下：</p>
+<ul>
+<li>布尔值转化为JSON后还是布尔值</li>
+<li>浮点数和整数会被转化为JSON里面的常规数字。</li>
+<li>字符串将以UTF-8编码转化输出为Unicode字符集的字符串，特殊字符比如&lt;将会被转义为\u003c</li>
+<li>数组和切片会转化为JSON里面的数组，但是[]byte类型的值将会被转化为Base64编码后的字符串，slice类型的零值会被转化为null</li>
+<li>结构体会转化为JSON对象，并且只有结构体里面以大写字母开头的可被导出的字段才会被转化输出，而这些可导出的字段会被作为JSON对象的字符串索引。。</li>
+<li>转化一个map类型的数据结构式，该数据结构的类型必须是map[string]T(T可以是encode/json包支持的任一数据类型)</li>
+</ul>
+<h3 id="2解码json数据">2）解码JSON数据</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//第一个参数时输入，即JSON格式的文本，第二个参数表示目标输出容器，用于存放解码后的值。		
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span><span class="nx">v</span> <span class="kd">interface</span><span class="p">{})</span><span class="kt">error</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">book</span> <span class="nx">Book</span>
+</span></span><span class="line"><span class="cl"><span class="nx">err</span><span class="o">:=</span><span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span><span class="o">&amp;</span><span class="nx">book</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	json.Unmarshal()函数会根据一个约定的瞬息查找目标结构的字段，如果找到一个即发生匹配，假设一个JSON对象有个名为”Foo“的索引，要将”Foo“所对应的值填充到目标结构体的目标字段上，json.Unmarshal()将会遵循如下顺序进行查找匹配：</p>
+<p>​		(1)一个包含Foo标签的字段</p>
+<p>​		(2)一个名为Foo的字段</p>
+<p>​		(3)一个名为Foo或者Foo或者除了首字母其他字母不区分大小写的名为Foo的字段</p>
+<p>如过JSON中的字段在Go目标类型中不存，json.Unmarshal()函数会在解码过程中丢弃该字段。该特性让我们可以从同一段JSON数据中筛选指定的值填充到多个Go语言类型中，当然，前提是已知JSON数据的字段结构，这也同样意味着，目标类型中不可被导出的私有字段将不会受到解码转化的影响。</p>
+<h3 id="3解码未知结构的json数据">3）解码未知结构的JSON数据</h3>
+<p>​		Go语言支持接口，在Go语言里，接口是一组预定义方法的组合，任何一个类型均可通过实现接口预定义的方法来实现，且无需显示声明，所以没有任何方法的空接口可以代表任何类型，换句话说，每一个类型其实都至少实现了一个空接口。</p>
+<p>​		Go内建这样灵活的类型系统，向我们传递了一个很有价值的信息：空接口是通用类型，如果要解码一段未知结构的JSON，只需要将这段JSON数据解码输出到一个空接口即可，在解码过程中，JSON数据里面的元素类型将做如下转换：</p>
+<ul>
+<li>JSON中的布尔值将会转换为Go语言中的bool类型</li>
+<li>数值会被转化为go语言中的float64类型</li>
+<li>字符串-&gt;string</li>
+<li>数组-&gt;[]interface{}</li>
+<li>对象-&gt;map[string]interface{}</li>
+<li>Null-&gt;nil.</li>
+</ul>
+<h3 id="4json的流式读写">4）JSON的流式读写</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">r</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Reader</span><span class="p">)</span><span class="o">*</span><span class="nx">Decoder</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">NewEncoder</span><span class="p">(</span><span class="nx">w</span> <span class="nx">io</span><span class="p">.</span><span class="nx">Writer</span><span class="p">)</span><span class="o">*</span><span class="nx">Encoder</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//从标准输入流中读取JSON数据，然后将其解码，但只保留Title字段
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">mian</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">dec</span><span class="o">:=</span><span class="nx">json</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">enc</span><span class="o">:=</span><span class="nx">json</span><span class="p">.</span><span class="nf">NewEncoder</span><span class="p">(</span><span class="nx">os</span><span class="p">.</span><span class="nx">Stdout</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">v</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span> <span class="kd">interface</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span><span class="o">:=</span><span class="nx">dec</span><span class="p">.</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">v</span><span class="p">);</span><span class="nx">err</span><span class="o">!=</span><span class="kc">nil</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">k</span><span class="o">:=</span><span class="k">range</span> <span class="nx">v</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="nx">k</span><span class="o">!=</span><span class="s">&#34;Title&#34;</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">v</span><span class="p">[</span><span class="nx">k</span><span class="p">]=</span><span class="kc">nil</span><span class="p">,</span><span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span><span class="o">:=</span><span class="nx">enc</span><span class="p">.</span><span class="nf">Encode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">v</span><span class="p">);</span><span class="nx">err</span><span class="o">!=</span><span class="kc">nil</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="三安全编程">三、安全编程</h1>
+<h2 id="1数字加密">1、数字加密</h2>
+<h2 id="2数字签名">2、数字签名</h2>
+<h2 id="3数字证书">3、数字证书</h2>
+<h2 id="4pki体系">4、PKI体系</h2>
+<h2 id="5go语言的哈希函数">5、Go语言的哈希函数</h2>
+<h2 id="6加密通信">6、加密通信</h2>
+<h1 id="四工程编程">四、工程编程</h1>
+<h2 id="1go命令行工具">1、Go命令行工具</h2>
+<h2 id="2代码风格">2、代码风格</h2>
+<h2 id="3远程import支持">3、远程import支持</h2>
+<h2 id="4工程组织">4、工程组织</h2>
+<h2 id="5文档管理">5、文档管理</h2>
+<h2 id="6工程构建">6、工程构建</h2>
+<h2 id="7跨平台开发">7、跨平台开发</h2>
+<h2 id="8单元测试">8、单元测试</h2>
+<h2 id="9打包分发">9、打包分发</h2>
+<h1 id="五进阶话题">五、进阶话题</h1>
+<h2 id="1反射">1、反射</h2>
+<h2 id="2语言交互性">2、语言交互性</h2>
+<h2 id="3链接符号">3、链接符号</h2>
+<h2 id="4goroutine机理">4、goroutine机理</h2>
+<h2 id="接口机理">接口机理</h2>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-05-30</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://%E6%98%8E%E5%A5%87.top/%E8%BF%9B%E9%98%B6%E7%AF%87/" data-title="进阶篇" data-hashtags="go"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://%E6%98%8E%E5%A5%87.top/%E8%BF%9B%E9%98%B6%E7%AF%87/" data-hashtag="go"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="http://%E6%98%8E%E5%A5%87.top/%E8%BF%9B%E9%98%B6%E7%AF%87/" data-title="进阶篇"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="http://%E6%98%8E%E5%A5%87.top/%E8%BF%9B%E9%98%B6%E7%AF%87/" data-title="进阶篇"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="http://%E6%98%8E%E5%A5%87.top/%E8%BF%9B%E9%98%B6%E7%AF%87/" data-title="进阶篇"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/go/">go</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" class="prev" rel="prev" title="并发编程"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>并发编程</a>
+            <a href="/godifferentwithothers/" class="next" rel="next" title="Go语言和其他语言的差异">Go语言和其他语言的差异<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="disqus_thread" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://disqus.com/?ref_noscript">Disqus</a>.
+            </noscript><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2021 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">李明奇</a></span><span class="icp-splitter">&nbsp;|&nbsp;</span><br class="icp-br"/>
+                    <span class="icp"><div style="width:400px;margin:0 auto; padding:20px 0;"><a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011402012187" style="color:#666" target="_blank" ><img src="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/beian.png" style="float:left;"/>京公网安备 11011402012187号</a>&nbsp;&nbsp;&nbsp;&nbsp; <a style="color:#666" target="_blank" rel="noopener" href="http://beian.miit.gov.cn/">京ICP备2021039774号</a></div></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://.disqus.com/embed.js" defer></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.0/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.5.4/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"valine":{"appId":"cIRpq8figzQxyGz5LyAdUahJ-gzGzoHsz","appKey":"T9YWfgGhznKaXXx7TCLxzS3C","avatar":"robohash","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":true,"highlight":true,"lang":true,"meta":true,"pageSize":true,"placeholder":"说点什么吧...","recordIP":true,"visitor":true}},"data":{"id-1":"心有玲曦遇见你","id-2":"心有玲曦遇见你"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

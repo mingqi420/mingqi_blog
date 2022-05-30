@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Go语言和其他语言的差异 - 心有玲曦遇见你</title><meta name="Description" content="早起的年轻人做的网站"><meta property="og:title" content="Go语言和其他语言的差异" />
+<meta property="og:description" content="Go语言和其他语言的不同 ​	Go语言作为出现比较晚的一门编程语言，在其原生支持高并发、云原生等领域的优秀表现，像目前比较流程的容器编排技术Kubernetes、容器技术Docker都是用Go语言写的，像Java等其他面向对象的语言，虽然也能做云原生相关的开发，但是支持的程度远没有Go语言高，凭借其语言特性和简单的编程方式，弥补了其他编程语言一定程度上的不足，一度成为一个热门的编程语言。
+​	最近在学习Go语言，我之前使用过C#、Java等面向对象编程的语言，发现其中有很多的编程方式和其他语言有区别的地方，好记性不如烂笔头，总结一下，和其他语言做个对比。这里之总结差异的地方，具体的语法不做详细的介绍。
+​	种一棵树最好的时间是十年前，其次是现在。
+基础语法 1、变量 ​	1）Go语言变量声明语句不需要使用分号作为分割符
+1 2  var v1 int var v2 string   ​	2）可以将若干个需要声明的变量放在一起
+1 2 3 4  var( v1 int v2 string )   ​	3)变量初始化时候可以和其他语言一样直接在变量后面加等号，等号后面为要初始化的值，也可以使用变量名：=变量值的简单方式
+1 2 3  var v1 int=10//正常的使用方法 var v2=10//编译器可以推导出v2的类型 v3:=10//简单写法 明确表达同时进行变量声明和初始化工作   ​	3）变量赋值 Go语言的变量赋值和多数语言一致，但是Go语言提供了多重赋值的功能，比如下面这个交换i、j变量的语句：
+1  i,j=j,i   ​	在不支持多重赋值的语言中，交换两个变量的值需要引入一个中间变量：
+1  t=i；i=j；j=t;   ​	4)匿名变量
+​	在使用其他语言时，有时候要获取一个值，却因为该函数返回多个值而不得不定义很多没有的变量，Go语言可以借助多重返回值和匿名变量来避免这种写法，使代码看起来更优雅。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://%E6%98%8E%E5%A5%87.top/godifferentwithothers/" /><meta property="og:image" content="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-05-30T15:18:45+08:00" />
+<meta property="article:modified_time" content="2022-05-30T15:18:45+08:00" /><meta property="og:site_name" content="My cool site" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"/>
+
+<meta name="twitter:title" content="Go语言和其他语言的差异"/>
+<meta name="twitter:description" content="Go语言和其他语言的不同 ​	Go语言作为出现比较晚的一门编程语言，在其原生支持高并发、云原生等领域的优秀表现，像目前比较流程的容器编排技术Kubernetes、容器技术Docker都是用Go语言写的，像Java等其他面向对象的语言，虽然也能做云原生相关的开发，但是支持的程度远没有Go语言高，凭借其语言特性和简单的编程方式，弥补了其他编程语言一定程度上的不足，一度成为一个热门的编程语言。
+​	最近在学习Go语言，我之前使用过C#、Java等面向对象编程的语言，发现其中有很多的编程方式和其他语言有区别的地方，好记性不如烂笔头，总结一下，和其他语言做个对比。这里之总结差异的地方，具体的语法不做详细的介绍。
+​	种一棵树最好的时间是十年前，其次是现在。
+基础语法 1、变量 ​	1）Go语言变量声明语句不需要使用分号作为分割符
+1 2  var v1 int var v2 string   ​	2）可以将若干个需要声明的变量放在一起
+1 2 3 4  var( v1 int v2 string )   ​	3)变量初始化时候可以和其他语言一样直接在变量后面加等号，等号后面为要初始化的值，也可以使用变量名：=变量值的简单方式
+1 2 3  var v1 int=10//正常的使用方法 var v2=10//编译器可以推导出v2的类型 v3:=10//简单写法 明确表达同时进行变量声明和初始化工作   ​	3）变量赋值 Go语言的变量赋值和多数语言一致，但是Go语言提供了多重赋值的功能，比如下面这个交换i、j变量的语句：
+1  i,j=j,i   ​	在不支持多重赋值的语言中，交换两个变量的值需要引入一个中间变量：
+1  t=i；i=j；j=t;   ​	4)匿名变量
+​	在使用其他语言时，有时候要获取一个值，却因为该函数返回多个值而不得不定义很多没有的变量，Go语言可以借助多重返回值和匿名变量来避免这种写法，使代码看起来更优雅。"/>
+<meta name="application-name" content="LoveIt">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="canonical" href="http://%E6%98%8E%E5%A5%87.top/godifferentwithothers/" /><link rel="prev" href="http://%E6%98%8E%E5%A5%87.top/%E8%BF%9B%E9%98%B6%E7%AF%87/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Go语言和其他语言的差异",
+        "inLanguage": "",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/%E6%98%8E%E5%A5%87.top\/godifferentwithothers\/"
+        },"image": ["http:\/\/%E6%98%8E%E5%A5%87.top\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "go","wordcount":  339 ,
+        "url": "http:\/\/%E6%98%8E%E5%A5%87.top\/godifferentwithothers\/","datePublished": "2022-05-30T15:18:45+08:00","dateModified": "2022-05-30T15:18:45+08:00","publisher": {
+            "@type": "Organization",
+            "name": "李明奇","logo": "https:\/\/limingqi.oss-cn-beijing.aliyuncs.com\/mingqi_blog\/img\/logo.jpg"},"author": {
+                "@type": "Person",
+                "name": "李明奇"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="心有玲曦遇见你"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"
+        data-srcset="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg, https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg 1.5x, https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg 2x"
+        data-sizes="auto"
+        alt="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"
+        title="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg" /><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/" title="标签"> 标签 </a><a class="menu-item" href="/categories/" title="分类"> 分类 </a><a class="menu-item" href="/about/" title="关于我"> 关于 </a><a class="menu-item" href="https://github.com/mingqi420" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i> Github </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="心有玲曦遇见你"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"
+        data-srcset="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg, https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg 1.5x, https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg 2x"
+        data-sizes="auto"
+        alt="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"
+        title="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg" /><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="标签">标签</a><a class="menu-item" href="/categories/" title="分类">分类</a><a class="menu-item" href="/about/" title="关于我">关于</a><a class="menu-item" href="https://github.com/mingqi420" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>Github</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Go语言和其他语言的差异</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>程序设计</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-05-30">2022-05-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 339 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 2 分钟&nbsp;<span id="/godifferentwithothers/" class="leancloud_visitors" data-flag-title="Go语言和其他语言的差异">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#go语言和其他语言的不同">Go语言和其他语言的不同</a>
+      <ul>
+        <li><a href="#基础语法">基础语法</a>
+          <ul>
+            <li><a href="#1变量">1、变量</a></li>
+            <li><a href="#2常量">2、常量</a></li>
+            <li><a href="#3类型">3、类型</a></li>
+            <li><a href="#4条件语句if">4、条件语句If</a></li>
+            <li><a href="#5选择语句switch">5、选择语句（switch）</a></li>
+            <li><a href="#6循环语句for">6、循环语句for</a></li>
+            <li><a href="#7跳转语句">7、跳转语句</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="go语言和其他语言的不同">Go语言和其他语言的不同</h1>
+<p>​	Go语言作为出现比较晚的一门编程语言，在其原生支持高并发、云原生等领域的优秀表现，像目前比较流程的容器编排技术Kubernetes、容器技术Docker都是用Go语言写的，像Java等其他面向对象的语言，虽然也能做云原生相关的开发，但是支持的程度远没有Go语言高，凭借其语言特性和简单的编程方式，弥补了其他编程语言一定程度上的不足，一度成为一个热门的编程语言。</p>
+<p>​	最近在学习Go语言，我之前使用过C#、Java等面向对象编程的语言，发现其中有很多的编程方式和其他语言有区别的地方，好记性不如烂笔头，总结一下，和其他语言做个对比。这里之总结差异的地方，具体的语法不做详细的介绍。</p>
+<p>​	种一棵树最好的时间是十年前，其次是现在。</p>
+<h2 id="基础语法">基础语法</h2>
+<h3 id="1变量">1、变量</h3>
+<p>​	1）Go语言变量声明语句不需要使用分号作为分割符</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">v1</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">v2</span> <span class="kt">string</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	2）可以将若干个需要声明的变量放在一起</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">v1</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">v2</span> <span class="kt">string</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	3)变量初始化时候可以和其他语言一样直接在变量后面加等号，等号后面为要初始化的值，也可以使用变量名：=变量值的简单方式</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">v1</span> <span class="kt">int</span><span class="p">=</span><span class="mi">10</span><span class="c1">//正常的使用方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">v2</span><span class="p">=</span><span class="mi">10</span><span class="c1">//编译器可以推导出v2的类型
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">v3</span><span class="o">:=</span><span class="mi">10</span><span class="c1">//简单写法 明确表达同时进行变量声明和初始化工作
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	3）变量赋值  Go语言的变量赋值和多数语言一致，但是Go语言提供了多重赋值的功能，比如下面这个交换i、j变量的语句：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">i</span><span class="p">,</span><span class="nx">j</span><span class="p">=</span><span class="nx">j</span><span class="p">,</span><span class="nx">i</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	在不支持多重赋值的语言中，交换两个变量的值需要引入一个中间变量：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">t</span><span class="o">=</span><span class="n">i</span><span class="err">；</span><span class="n">i</span><span class="o">=</span><span class="n">j</span><span class="err">；</span><span class="n">j</span><span class="o">=</span><span class="n">t</span><span class="o">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	4)匿名变量</p>
+<p>​		在使用其他语言时，有时候要获取一个值，却因为该函数返回多个值而不得不定义很多没有的变量，Go语言可以借助多重返回值和匿名变量来避免这种写法，使代码看起来更优雅。</p>
+<p>​	假如GetName()函数返回3个值，分别是firstName,lastName和nickName</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">GetName</span><span class="p">()(</span><span class="nx">firstName</span><span class="p">,</span><span class="nx">lastName</span><span class="p">,</span><span class="nx">nickName</span> <span class="kt">string</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="s">&#34;li&#34;</span><span class="p">,</span><span class="s">&#34;mingqi&#34;</span><span class="p">,</span><span class="s">&#34;dove&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	若指向获得nickName，则函数调用可以这样写</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">_</span><span class="p">,</span><span class="nx">_</span><span class="p">,</span><span class="nx">nickName</span><span class="o">:=</span><span class="nf">GetName</span><span class="p">()</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这种写法可以让代码更清晰，从而大幅降低沟通的复杂度和维护的难度。</p>
+<h3 id="2常量">2、常量</h3>
+<p>​	1）基本常量</p>
+<p>​	常量使用关键字const 定义，可以限定常量类型，但不是必须的，如果没有定义常量的类型，是无类型常量</p>
+<p>​	2）预定义常量</p>
+<p>​    Go语言预定义了这些常量 true、false和iota</p>
+<p>​	iota比较特殊，可以被任务是一个可被编译器修改的常量，在每个const关键字出现时被重置为0，然后在下一个const出现之前每出现一个iota，其所代表的数字会自动加1.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//预定义常量：true，false和iota
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// iota可以被认为是一个编译器修改的常量，在没有个const关键字出现时被重置为0，然后在下一个const出现之前，
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//没出现一次iota，其所在的数字会自动增1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">c0</span> <span class="p">=</span> <span class="kc">iota</span><span class="c1">//c0=0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">c1</span> <span class="p">=</span> <span class="kc">iota</span><span class="c1">//c1=1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">c2</span> <span class="p">=</span> <span class="kc">iota</span><span class="c1">//c2=2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;c0:&#34;</span><span class="p">,</span><span class="nx">c0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;c1:&#34;</span><span class="p">,</span><span class="nx">c1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;c2&#34;</span><span class="p">,</span><span class="nx">c2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">x</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span> <span class="c1">// x==1(iota在每个const开头被重设为0)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">y</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span><span class="c1">// y==2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">z</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span><span class="c1">// z==4
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;x:&#34;</span><span class="p">,</span><span class="nx">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;y:&#34;</span><span class="p">,</span><span class="nx">y</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;z:&#34;</span><span class="p">,</span><span class="nx">z</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">r</span> <span class="p">=</span> <span class="kc">iota</span><span class="o">*</span><span class="mi">42</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">t</span> <span class="kt">float32</span> <span class="p">=</span><span class="kc">iota</span><span class="o">*</span><span class="mi">42</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">w</span> <span class="p">=</span><span class="kc">iota</span><span class="o">*</span><span class="mi">42</span>
+</span></span><span class="line"><span class="cl">	<span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;r:&#34;</span><span class="p">,</span><span class="nx">r</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;t:&#34;</span><span class="p">,</span><span class="nx">t</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;w:&#34;</span><span class="p">,</span><span class="nx">w</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">const</span> <span class="nx">aa</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">bb</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;aa:&#34;</span><span class="p">,</span><span class="nx">aa</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;bb:&#34;</span><span class="p">,</span><span class="nx">bb</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">const</span> <span class="nx">mark</span> <span class="p">=</span><span class="mi">2</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span> <span class="c1">//编译期运算的常量表达式
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;mark:&#34;</span><span class="p">,</span><span class="nx">mark</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	3)枚举</p>
+<p>​	Go语言不支持emum关键字，而使用常量声明的方法定义枚举值：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">const</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Sunday</span><span class="p">=</span><span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Monday</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Tuesday</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Wendnesday</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Thursday</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Friday</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Saturday</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">numberOfDays</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="3类型">3、类型</h3>
+<p>​	1）int 和int32在Go语言中被认为是两种不同类型的类型</p>
+<p>​	2）Go语言定义了两个浮点型float32和float64，其中前者等价于C语言的float类型，后者等价于C语言的double类型</p>
+<p>​	<strong>3）go语言支持复数类型</strong></p>
+<p>​		复数实际上是由两个实数（在计算机中使用浮点数表示）构成，一个表示实部（real）、一个表示虚部（imag）。也就是数学上的那个复数</p>
+<p>​		复数的表示</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">value</span> <span class="kt">complex64</span><span class="c1">//由两个float32 构成的复数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">value1</span><span class="p">=</span><span class="mf">3.2</span><span class="o">+</span><span class="m">12i</span>
+</span></span><span class="line"><span class="cl"><span class="nx">value2</span><span class="o">:=</span><span class="mf">3.2</span><span class="o">+</span><span class="m">12i</span> <span class="c1">//value2是complex128类型
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">value3</span><span class="o">:=</span><span class="nb">complex</span><span class="p">(</span><span class="mf">3.2</span><span class="p">,</span><span class="mi">12</span><span class="p">)</span><span class="c1">//结果同value2
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>​    	实部与虚部</p>
+<p>​		对于一个复数z=complex(x,y),就可以通过Go语言内置函数real(z)获得该复数的实部，也就是x，通过imag(z)获得该复数的虚部，也就是y</p>
+<p>​	4）数组(值类型，长度在定义后无法再次修改，每次传递都将产生一个副本。)</p>
+<pre><code>声明数组可以使用[n]type方式，也可以使用make关键字
+</code></pre>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="nx">a</span><span class="o">:=</span><span class="nb">make</span><span class="p">([</span><span class="mi">10</span><span class="p">]</span> <span class="kt">int</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	5）数组切片（slice）</p>
+<p>​		数组切片（slice）弥补了数组的不足，其数据结构可以抽象为以下三个变量：</p>
+<ul>
+<li>
+<p>一个指向原生数组的指针</p>
+</li>
+<li>
+<p>数组切片中的元素个数</p>
+</li>
+<li>
+<p>数组切片已分配的存储空间。</p>
+</li>
+</ul>
+<p>​	6）Map
+在go语言中Map不需要引入任何库，使用很方便</p>
+<h3 id="4条件语句if">4、条件语句If</h3>
+<ol>
+<li>条件语句不需要括号将条件包含起来</li>
+<li>无论语句体内有几条语句，花括号{}必须存在</li>
+<li>左花括号{必须与if或者else处于同一行</li>
+<li>在if之后条件语句之前，可以添加变量初始化语句，使用分号间隔</li>
+<li>在有返回值的函数中，不允许将最终的return语句包含在if&hellip;else结构中，否则会编译失败。</li>
+</ol>
+<h3 id="5选择语句switch">5、选择语句（switch）</h3>
+<ol>
+<li>​	左花括号{必须和switch处于同一行</li>
+<li>条件表达式不限制常量或者证书</li>
+<li>单个case中，可以出现多个结果选项</li>
+<li>Go语言中不需要break来明确退出一个case</li>
+<li>只有在case中明确添加fallthrough关键字，才会继续执行紧跟的下一个case</li>
+<li>可以不设定switch之后的表达式，在此种情况下，整个switch结构和if&hellip;else的逻辑作用一样</li>
+</ol>
+<h3 id="6循环语句for">6、循环语句for</h3>
+<p>Go循环语句只支持for关键字，不支持while和do-while</p>
+<ol>
+<li>
+<p>左{花括号必须与for处于同一行</p>
+</li>
+<li>
+<p>Go语言不支持以逗号为间隔的多个赋值语句，必须使用平行的赋值语句来初始化多个变量</p>
+</li>
+<li>
+<p>Go语言的for循环同样也支持continue和break来控制循环，但是它提供了一个更高级别的break，可以选择中断哪一个循环</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">j</span><span class="o">:=</span><span class="mi">0</span><span class="p">;</span><span class="nx">j</span><span class="p">&lt;</span><span class="mi">5</span><span class="p">;</span><span class="nx">j</span><span class="o">++</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="nx">i</span><span class="o">:=</span><span class="mi">0</span><span class="p">;</span><span class="nx">i</span><span class="p">&lt;</span><span class="mi">10</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">i</span><span class="p">&gt;</span><span class="mi">5</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span> <span class="nx">JLoop</span> <span class="c1">//break语句终止的是JLoop标签处的外层循环
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">JLoop</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// ...
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<h3 id="7跳转语句">7、跳转语句</h3>
+<p>​	goto语句的语义非常简单，就是跳转到本函数内的某个标签</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">fun</span> <span class="nf">myfunc</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">i</span><span class="o">:=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">HERE</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">i</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">i</span><span class="p">&lt;</span><span class="mi">10</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">goto</span> <span class="nx">HERE</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-05-30</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://%E6%98%8E%E5%A5%87.top/godifferentwithothers/" data-title="Go语言和其他语言的差异" data-hashtags="go"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://%E6%98%8E%E5%A5%87.top/godifferentwithothers/" data-hashtag="go"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="http://%E6%98%8E%E5%A5%87.top/godifferentwithothers/" data-title="Go语言和其他语言的差异"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="http://%E6%98%8E%E5%A5%87.top/godifferentwithothers/" data-title="Go语言和其他语言的差异"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="http://%E6%98%8E%E5%A5%87.top/godifferentwithothers/" data-title="Go语言和其他语言的差异"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/go/">go</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/%E8%BF%9B%E9%98%B6%E7%AF%87/" class="prev" rel="prev" title="进阶篇"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>进阶篇</a></div>
+</div>
+<div id="comments"><div id="disqus_thread" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://disqus.com/?ref_noscript">Disqus</a>.
+            </noscript><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2021 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">李明奇</a></span><span class="icp-splitter">&nbsp;|&nbsp;</span><br class="icp-br"/>
+                    <span class="icp"><div style="width:400px;margin:0 auto; padding:20px 0;"><a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011402012187" style="color:#666" target="_blank" ><img src="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/beian.png" style="float:left;"/>京公网安备 11011402012187号</a>&nbsp;&nbsp;&nbsp;&nbsp; <a style="color:#666" target="_blank" rel="noopener" href="http://beian.miit.gov.cn/">京ICP备2021039774号</a></div></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://.disqus.com/embed.js" defer></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.0/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.5.4/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"valine":{"appId":"cIRpq8figzQxyGz5LyAdUahJ-gzGzoHsz","appKey":"T9YWfgGhznKaXXx7TCLxzS3C","avatar":"robohash","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":true,"highlight":true,"lang":true,"meta":true,"pageSize":true,"placeholder":"说点什么吧...","recordIP":true,"visitor":true}},"data":{"id-1":"心有玲曦遇见你","id-2":"心有玲曦遇见你"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

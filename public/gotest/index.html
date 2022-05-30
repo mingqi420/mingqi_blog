@@ -4,32 +4,36 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>go学习笔记 - 心有玲曦遇见你</title><meta name="Description" content="早起的年轻人做的网站"><meta property="og:title" content="go学习笔记" />
-<meta property="og:description" content="fsfsfs" />
+        <title>go语言面向对象编程 - 心有玲曦遇见你</title><meta name="Description" content="早起的年轻人做的网站"><meta property="og:title" content="go语言面向对象编程" />
+<meta property="og:description" content="1、类型系统 类型系统是指一个语言的类型体系结构，一个典型的类型系统通常包含如下基本内容：
+ 基础类型，如byte、int、bool、float等 复合类型：如数组、结构体、指针等 可以指向任意对象的类型 值语义和引用语义 面向对象 接口  为类型添加方法 1 2 3 4  type Integer int func(a Integer) Less(b Integer) bool{ return a&lt;b }   ​	只有在修改修改对象的时候才必须用指针，他不是go语言的约束，而是一种自然约束
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17  //这里为Integer类型增加了add方法，由于Add方法需要修改对象的值，所以需要用指针引用 func (a *Integer)Add(b Integer){ *a&#43;=b } //调用如下： func main(){ var a Integer=1 var b Integer=1 b.Add(2) fmt.Println(&#34;a=&#34;,a)//a=3  fmt.Println(&#34;b=&#34;,b)//b=1  //类型都是基于值传递的，要想修改变量的值，只能传递指针。 } //如果实现方法时传入的不是指针而是值，那么运行程序得到的结果会是a=1 func (a Integer)Add1(b Integer){ a&#43;=b }   ​" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://%E6%98%8E%E5%A5%87.top/gotest/" /><meta property="og:image" content="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-05-24T18:38:36+08:00" />
-<meta property="article:modified_time" content="2022-05-24T18:38:36+08:00" /><meta property="og:site_name" content="My cool site" />
+<meta property="article:published_time" content="2022-05-25T15:58:08+08:00" />
+<meta property="article:modified_time" content="2022-05-25T15:58:08+08:00" /><meta property="og:site_name" content="My cool site" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"/>
 
-<meta name="twitter:title" content="go学习笔记"/>
-<meta name="twitter:description" content="fsfsfs"/>
+<meta name="twitter:title" content="go语言面向对象编程"/>
+<meta name="twitter:description" content="1、类型系统 类型系统是指一个语言的类型体系结构，一个典型的类型系统通常包含如下基本内容：
+ 基础类型，如byte、int、bool、float等 复合类型：如数组、结构体、指针等 可以指向任意对象的类型 值语义和引用语义 面向对象 接口  为类型添加方法 1 2 3 4  type Integer int func(a Integer) Less(b Integer) bool{ return a&lt;b }   ​	只有在修改修改对象的时候才必须用指针，他不是go语言的约束，而是一种自然约束
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17  //这里为Integer类型增加了add方法，由于Add方法需要修改对象的值，所以需要用指针引用 func (a *Integer)Add(b Integer){ *a&#43;=b } //调用如下： func main(){ var a Integer=1 var b Integer=1 b.Add(2) fmt.Println(&#34;a=&#34;,a)//a=3  fmt.Println(&#34;b=&#34;,b)//b=1  //类型都是基于值传递的，要想修改变量的值，只能传递指针。 } //如果实现方法时传入的不是指针而是值，那么运行程序得到的结果会是a=1 func (a Integer)Add1(b Integer){ a&#43;=b }   ​"/>
 <meta name="application-name" content="LoveIt">
-<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="canonical" href="http://%E6%98%8E%E5%A5%87.top/gotest/" /><link rel="prev" href="http://%E6%98%8E%E5%A5%87.top/golearn/" /><link rel="next" href="http://%E6%98%8E%E5%A5%87.top/base/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="canonical" href="http://%E6%98%8E%E5%A5%87.top/gotest/" /><link rel="prev" href="http://%E6%98%8E%E5%A5%87.top/base/" /><link rel="next" href="http://%E6%98%8E%E5%A5%87.top/kubernetes/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "BlogPosting",
-        "headline": "go学习笔记",
+        "headline": "go语言面向对象编程",
         "inLanguage": "",
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "http:\/\/%E6%98%8E%E5%A5%87.top\/gotest\/"
-        },"image": ["http:\/\/%E6%98%8E%E5%A5%87.top\/images\/Apple-Devices-Preview.png"],"genre": "posts","wordcount":  1 ,
-        "url": "http:\/\/%E6%98%8E%E5%A5%87.top\/gotest\/","datePublished": "2022-05-24T18:38:36+08:00","dateModified": "2022-05-24T18:38:36+08:00","publisher": {
+        },"image": ["http:\/\/%E6%98%8E%E5%A5%87.top\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "go","wordcount":  643 ,
+        "url": "http:\/\/%E6%98%8E%E5%A5%87.top\/gotest\/","datePublished": "2022-05-25T15:58:08+08:00","dateModified": "2022-05-25T15:58:08+08:00","publisher": {
             "@type": "Organization",
             "name": "李明奇","logo": "https:\/\/limingqi.oss-cn-beijing.aliyuncs.com\/mingqi_blog\/img\/logo.jpg"},"author": {
                 "@type": "Person",
@@ -115,10 +119,10 @@
                 <div class="container"><div class="toc" id="toc-auto">
             <h2 class="toc-title">目录</h2>
             <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">go学习笔记</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-05-24">2022-05-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 1 分钟&nbsp;<span id="/gotest/" class="leancloud_visitors" data-flag-title="go学习笔记">
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">go语言面向对象编程</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>程序设计</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-05-25">2022-05-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 643 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;<span id="/gotest/" class="leancloud_visitors" data-flag-title="go语言面向对象编程">
                         <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
                     </span>&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
@@ -126,31 +130,537 @@
                     <span>目录</span>
                     <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
                 </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
-            </div><div class="content" id="content"><p>fsfsfs</p>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1类型系统">1、类型系统</a>
+      <ul>
+        <li><a href="#为类型添加方法">为类型添加方法</a></li>
+        <li><a href="#值语义和引用语义">值语义和引用语义</a></li>
+        <li><a href="#结构体">结构体</a></li>
+      </ul>
+    </li>
+    <li><a href="#2初始化">2、初始化</a></li>
+    <li><a href="#3匿名组合">3、匿名组合</a></li>
+    <li><a href="#4可见性">4、可见性</a></li>
+    <li><a href="#5接口">5、接口</a>
+      <ul>
+        <li><a href="#其他语言的接口">其他语言的接口</a></li>
+        <li><a href="#非侵入式接口">非侵入式接口</a></li>
+        <li><a href="#接口赋值">接口赋值</a></li>
+        <li><a href="#接口查询">接口查询</a></li>
+        <li><a href="#类型查询">类型查询</a></li>
+        <li><a href="#接口组合">接口组合</a></li>
+        <li><a href="#any类型">Any类型</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="1类型系统">1、类型系统</h1>
+<p>类型系统是指一个语言的类型体系结构，一个典型的类型系统通常包含如下基本内容：</p>
+<ul>
+<li>基础类型，如byte、int、bool、float等</li>
+<li>复合类型：如数组、结构体、指针等</li>
+<li>可以指向任意对象的类型</li>
+<li>值语义和引用语义</li>
+<li>面向对象</li>
+<li>接口</li>
+</ul>
+<h2 id="为类型添加方法">为类型添加方法</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Integer</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="p">(</span><span class="nx">a</span> <span class="nx">Integer</span><span class="p">)</span> <span class="nf">Less</span><span class="p">(</span><span class="nx">b</span> <span class="nx">Integer</span><span class="p">)</span> <span class="kt">bool</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">a</span><span class="p">&lt;</span><span class="nx">b</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	只有在修改修改对象的时候才必须用指针，他不是go语言的约束，而是一种自然约束</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//这里为Integer类型增加了add方法，由于Add方法需要修改对象的值，所以需要用指针引用
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><span class="nx">Integer</span><span class="p">)</span><span class="nf">Add</span><span class="p">(</span><span class="nx">b</span> <span class="nx">Integer</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="nx">a</span><span class="o">+=</span><span class="nx">b</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//调用如下：
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">main</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">var</span> <span class="nx">a</span> <span class="nx">Integer</span><span class="p">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">var</span> <span class="nx">b</span> <span class="nx">Integer</span><span class="p">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">b</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;a=&#34;</span><span class="p">,</span><span class="nx">a</span><span class="p">)</span><span class="c1">//a=3
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;b=&#34;</span><span class="p">,</span><span class="nx">b</span><span class="p">)</span><span class="c1">//b=1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//类型都是基于值传递的，要想修改变量的值，只能传递指针。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//如果实现方法时传入的不是指针而是值，那么运行程序得到的结果会是a=1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="nx">Integer</span><span class="p">)</span><span class="nf">Add1</span><span class="p">(</span><span class="nx">b</span> <span class="nx">Integer</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">a</span><span class="o">+=</span><span class="nx">b</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​</p>
+<h2 id="值语义和引用语义">值语义和引用语义</h2>
+<p>值语义：</p>
+<p>​	基本类型</p>
+<p>​	复合类型，如数组、结构体和指针等</p>
+<p>引用语义：（看起来）</p>
+<p>​	数组切片</p>
+<p>​	map</p>
+<p>​	chaannel</p>
+<p>​	接口</p>
+<h2 id="结构体">结构体</h2>
+<p>​	go语言放弃了 包括集成在内的大量面向对象特性，只保留了组合这个最基础的特性</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Rect</span> <span class="kd">struct</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">x</span><span class="p">,</span><span class="nx">y</span> <span class="kt">float64</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">width</span><span class="p">,</span><span class="nx">height</span> <span class="kt">float64</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//为矩形类增加方法来计算面积
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">Rect</span><span class="p">)</span><span class="nf">Area</span><span class="p">()</span><span class="kt">float64</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">r</span><span class="p">.</span><span class="nx">width</span><span class="o">*</span><span class="nx">height</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="2初始化">2、初始化</h1>
+<p>​</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">r1</span><span class="o">:=</span><span class="nb">new</span><span class="p">(</span><span class="nx">Rect</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">r2</span><span class="o">:=&amp;</span><span class="nf">Rect</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nx">r3</span><span class="o">:=&amp;</span><span class="nf">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">r4</span><span class="o">:=&amp;</span><span class="nf">Rect</span><span class="p">(</span><span class="nx">width</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="nx">height</span><span class="p">:</span><span class="mi">200</span><span class="p">)</span><span class="c1">//未显示初始化的变量都会被初始化为该类型的零值。
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>go语言没有构造函数的概念，对象的创建通常交由一个全局的创建函数来完成，以NewXXX来命名，表示构造函数:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">NewRect</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span><span class="nx">y</span><span class="p">,</span><span class="nx">width</span><span class="p">,</span><span class="nx">height</span> <span class="kt">float64</span><span class="p">)</span><span class="o">*</span><span class="nx">Rect</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">Rect</span><span class="p">{</span><span class="nx">x</span><span class="p">,</span><span class="nx">y</span><span class="p">,</span><span class="nx">width</span><span class="p">,</span><span class="nx">height</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h1 id="3匿名组合">3、匿名组合</h1>
+<p>​	确切的说，Go语言也提供了继承，但是采用了组合的文法，所以我们称其为匿名组合</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Base</span> <span class="kd">struct</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Name</span> <span class="kt">string</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">base</span> <span class="o">*</span><span class="nx">Base</span><span class="p">)</span><span class="nf">Foo</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">base</span> <span class="o">*</span><span class="nx">Base</span><span class="p">)</span><span class="nf">Bar</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Foo</span> <span class="kd">struct</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Base</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// *Base 以指针的方式从一个类型派生，只是创建实例的时候需要外部提供一个Base类示例的指针。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//从Base类&#34;继承&#34;并改写了Bar方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">foo</span> <span class="o">*</span><span class="nx">Foo</span><span class="p">)</span><span class="nf">Bar</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">foo</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nf">Bar</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//Job类匿名组合了一个log.Logger指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">Job</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Command</span> <span class="kt">string</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="nx">log</span><span class="p">.</span><span class="nx">Logger</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//在合适的赋值后，我们在Job类型的所有成员方法中都可以很舒服地借用所有log.Logger提供的方法：
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">job</span> <span class="o">*</span><span class="nx">Job</span><span class="p">)</span><span class="nf">Start</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">job</span><span class="p">.</span><span class="nf">Log</span><span class="p">(</span><span class="s">&#34;start now&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//对于job的实现者来说，他甚至根本不用意识到log.Logger的存在，这就是匿名的魅力所在
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">job</span><span class="p">.</span><span class="nf">Log</span><span class="p">(</span><span class="s">&#34;end now&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	不管是非匿名函数的类型组合还是匿名组合，被组合的类型所包含的方法虽然升级成了外部这个组合类型的方法，但其实他们被组合方法调用时接收者并没有改变，比如上面的这个Job的例子，即使组合后调用方式编程了job.Log(),但Log内部的接收者仍然是log.Logger指针，因此在Log中不能访问job的其他成员变量和方法。</p>
+<h1 id="4可见性">4、可见性</h1>
+<p>​	定义类、变量、方法名称首字母大写即可对其他包可见</p>
+<h1 id="5接口">5、接口</h1>
+<p>​	<strong>接口是go语言整个类型系统的基石，让其在基础编程哲学上的探索上达到前所未有的高度。go语言的编程哲学因为有接口而趋近完美。</strong></p>
+<h2 id="其他语言的接口">其他语言的接口</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">interface</span> <span class="nc">IFoo</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="nf">Bar</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">implements</span> <span class="n">IFoo</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//... java 文法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">:</span> <span class="kd">public</span> <span class="n">IFoo</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//c++文法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">IFoo</span><span class="o">*</span> <span class="n">foo</span><span class="o">=</span><span class="k">new</span> <span class="n">Foo</span><span class="o">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	即使另外一个接口IFoo2实现了与IFoo完全一样的接口方法，甚至名字也叫IFoo，只不过位于不同的命名空间下，编译器也会认为上面的类Foo只实现了IFoo接口而没有实现IFoo2接口。</p>
+<p>​	这类接口我们称之为侵入式接口。主要表现在实现类需要明确自己实现了某个接口。这种强制性的接口集成是面向对象编程思想发展过程中一个遭受相当多质疑的特性。结下来我们来讨论下为什么是这个问题。</p>
+<p>​	假如我们现在要实现一个简单的搜索引擎（SE），他需要依赖两个模块，一个是哈希表（HT），一个时HTML分析器（HtmlPaser）</p>
+<p>​	搜索引擎的实现者认为，SE对HT的依赖是确定性的，所以不需要在SE和HT之间定义接口，而是直接通过import（或者include）的方式使用HT；而模块SE对HtmlParser的依赖是不确定的，未来可能需要由wordParser、pdfPaser等模块来替代HtmlParser，以达到不同业务要求，为此，他定义了SE和HtmlParser之间的接口，在模块Se中通过接口调用的方式引用模块HtmlParser。</p>
+<p>​	应当注意到，接口的需求方式SE，只有SE才知道接口需要定义成什么样子，但是接口的实现方式HtmlParser。基于模块设计的单项依赖原则，HtmlParser实现自身业务的时候，不应该关心某个具体使用方的要求。在实现的时候，甚至还不知道未来有一天SE会用上他。</p>
+<p>​	期望模块HtmlPaser能够知道需求方需要的所有接口，并提前声明实现这些接口是不合理的，同样的道理发生在SE自己身上，SE并不能够预计未来有哪些需求方会用到自己，并实现他们的所要求的接口。</p>
+<p>​	这个问题在设计标准库的时候变得更加突出，比如我们实现的File类，他有下面这些方法：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nf">Read</span><span class="p">(</span><span class="nx">buf</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">Write</span><span class="p">(</span><span class="nx">buf</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">Seek</span><span class="p">(</span><span class="nx">off</span> <span class="kt">int64</span> <span class="nx">whence</span> <span class="kt">int</span><span class="p">)(</span><span class="nx">pos</span> <span class="kt">int64</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">Close</span><span class="p">()</span><span class="kt">error</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	那么到底是应该定义一个IFile接口，还是应该定义一系列的IRead，IWriter、ISeeker、ICloser接口，让File从他们集成好呢，脱离了实际用户的场景，讨论这两个设计哪个更好并无意义，问题在于，实现File类的时候，我怎么知道外部会怎么使用它呢。正式因为这中不合理的设计，实现JAVA、C#类库中的每个类都需要纠结以下两个问题：</p>
+<p>1、我提供哪个接口好呢</p>
+<p>2、如果两个类实现了相同的接口，应该把接口放到哪个包好呢？</p>
+<h2 id="非侵入式接口">非侵入式接口</h2>
+<p>​	在go语言中，一个类只要实现了接口要求的所有函数，我们就说这个类实现了该接口：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">定义File类，并实现有Read，Write，Seek，Close等方法
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span>  <span class="nx">File</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="o">*</span><span class="nx">File</span><span class="p">)</span> <span class="nf">Read</span><span class="p">(</span><span class="nx">buf</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="o">*</span><span class="nx">File</span><span class="p">)</span> <span class="nf">Write</span><span class="p">(</span><span class="nx">buf</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="o">*</span><span class="nx">File</span><span class="p">)</span> <span class="nf">Seek</span><span class="p">(</span><span class="nx">off</span> <span class="kt">int64</span><span class="p">,</span><span class="nx">whence</span> <span class="kt">int</span><span class="p">)(</span><span class="nx">pos</span> <span class="kt">int</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="o">*</span><span class="nx">File</span><span class="p">)</span> <span class="nf">Close</span><span class="p">()</span> <span class="kt">error</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//假如有以下接口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">IFile</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Read</span><span class="p">(</span><span class="nx">buf</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Write</span><span class="p">(</span><span class="nx">buf</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Seek</span><span class="p">(</span><span class="nx">off</span> <span class="kt">int64</span><span class="p">,</span><span class="nx">whence</span> <span class="kt">int</span><span class="p">)(</span><span class="nx">pos</span> <span class="kt">int</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Close</span><span class="p">()</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">IReader</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Read</span><span class="p">(</span><span class="nx">buf</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Iwriter</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Write</span><span class="p">(</span><span class="nx">buf</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">ISeeker</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Seek</span><span class="p">(</span><span class="nx">off</span> <span class="kt">int64</span><span class="p">,</span><span class="nx">whence</span> <span class="kt">int</span><span class="p">)(</span><span class="nx">pos</span> <span class="kt">int</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">ICloser</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Close</span><span class="p">()</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 尽管File类并没有从这些接口继承，甚至不知道这些接口的存在，但是File类实现了这些接口可以进行赋值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">demo</span><span class="p">()</span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">f1</span> <span class="nx">IFile</span><span class="p">=</span><span class="nb">new</span><span class="p">(</span><span class="nx">File</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">f2</span> <span class="nx">IReader</span><span class="p">=</span><span class="nb">new</span><span class="p">(</span><span class="nx">File</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">f3</span> <span class="nx">Iwriter</span><span class="p">=</span><span class="nb">new</span><span class="p">(</span><span class="nx">File</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">f4</span> <span class="nx">ICloser</span><span class="p">=</span><span class="nb">new</span><span class="p">(</span><span class="nx">File</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">f1</span><span class="p">,</span><span class="nx">f2</span><span class="p">,</span><span class="nx">f3</span><span class="p">,</span><span class="nx">f4</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	go语言的非侵入式接口，看似只是做了很小的文法调整，实则影响深远</p>
+<p>​	其一，Go语言的标准库，再也不需要回执类库的继承图，在go语言中，类的继承树并无意义，你知道知道这个类实现了那些方法，每个方法是啥含义就足够了。</p>
+<p>​	其二，实现类的时候只需要关心自己应该提供那些方法，不需要在纠结接口需要拆的多细才合理，接口由使用方按需定义，而不用事前规划。</p>
+<p>​	其三，不用为了实现一个接口而导入一个包，因为多引用一个外部包，就意味着更多的耦合。接口由使用方按自身需求定义，使用方无需关系是否有其他模块定义过类似的接口。</p>
+<h2 id="接口赋值">接口赋值</h2>
+<p>​	将对象实例赋值给接口</p>
+<p>​		要求该对象实现了接口要求的所有方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Integer</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="p">(</span><span class="nx">a</span> <span class="nx">Integer</span><span class="p">)</span><span class="nf">Less</span><span class="p">(</span><span class="nx">b</span> <span class="nx">Integer</span><span class="p">)</span><span class="kt">bool</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">a</span><span class="p">&lt;</span><span class="nx">b</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span><span class="p">(</span><span class="nx">a</span> <span class="o">*</span><span class="nx">Integer</span><span class="p">)</span><span class="nf">Add</span><span class="p">(</span><span class="nx">b</span> <span class="nx">Integer</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="nx">a</span><span class="o">+=</span><span class="nx">b</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//我们定义接口LessAdder
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">LessAdder</span> <span class="kd">interface</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">Less</span><span class="p">(</span><span class="nx">b</span> <span class="nx">Integer</span><span class="p">)</span> <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">Add</span><span class="p">(</span><span class="nx">b</span> <span class="nx">Integer</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//赋值 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">a</span> <span class="nx">Integer</span> <span class="p">=</span><span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">b</span> <span class="nx">LessAdder</span><span class="p">=</span><span class="o">&amp;</span><span class="nx">a</span><span class="c1">//正确    （1）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">b</span> <span class="nx">LessAdder</span><span class="p">=</span><span class="nx">a</span> <span class="c1">//错误    （2）
+</span></span></span><span class="line"><span class="cl"><span class="c1">// （1）正确的原因在于，Go语言可以根据下面的函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="nx">Integer</span><span class="p">)</span><span class="nf">Less</span><span class="p">(</span><span class="nx">b</span> <span class="nx">Integer</span><span class="p">)</span><span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//生成一个新的Less方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">a</span> <span class="o">*</span><span class="nx">Integer</span><span class="p">)</span><span class="nf">Less</span><span class="p">(</span><span class="nx">b</span> <span class="nx">Integer</span><span class="p">)</span><span class="kt">bool</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="nx">a</span><span class="p">).</span><span class="nf">Less</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//这样类型*Integer就既存在了Less方法，也存在了Add方法，满足LessAdder接口，而从另一个方面来说，根据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span><span class="p">(</span><span class="nx">a</span> <span class="o">*</span><span class="nx">Integer</span><span class="p">)</span><span class="nf">Add</span><span class="p">(</span><span class="nx">b</span> <span class="nx">Integer</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//这个函数无法自动生成以下这个成员方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span><span class="p">(</span><span class="nx">a</span> <span class="o">*</span><span class="nx">Integer</span><span class="p">)</span><span class="nf">Add</span><span class="p">(</span><span class="nx">b</span> <span class="nx">Integer</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="p">(</span><span class="o">&amp;</span><span class="nx">a</span><span class="p">).</span><span class="nf">Add</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//因为(&amp;a).Add(b)改变的知识参数a，对外部实际要操作的对象没有影响，这不符合用户的预期，所以，Go语言不会自动为其生成该函数，因此类型Integer只存在Less方法，缺少Add方法，不满足LessAdder接口，所以（2）不能赋值
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	将一个接口赋值给另一个接口</p>
+<p>​			只要两个接口拥有相同的方法列表（次序不同不要紧），那么他们就是等同的，可以相互赋值。接口赋值不要求两个接口不许等价。如果A接口的方法列表是接口B的方法列表的子集，那么接口B可以赋值给接口A</p>
+<h2 id="接口查询">接口查询</h2>
+<h2 id="类型查询">类型查询</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">v1</span> <span class="kd">interface</span><span class="p">{}=</span><span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="k">switch</span> <span class="nx">v</span><span class="p">:</span><span class="nx">v1</span><span class="p">.(</span><span class="kd">type</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="kt">int</span><span class="p">:</span><span class="c1">//现在v的类型时int
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">case</span> <span class="kt">string</span><span class="p">:</span><span class="c1">//v的类型时string
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>使用反射也可以进行类型查询。</p>
+<h2 id="接口组合">接口组合</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">//ReadWriter接口将基本的Read和Write方法组合起来
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">ReadWriter</span> <span class="kd">interface</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Reader</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Writer</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//这个接口组合了Reader和Writer两个接口，等同于如下写法：
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">ReadWriter</span> <span class="kd">interface</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">Read</span><span class="p">(</span><span class="nx">p</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">Write</span><span class="p">(</span><span class="nx">p</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span><span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//这两种写法的表意完全相同：ReadWriter接口既能做Reader接口的所有事情，又能做Writer接口的所有事情
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以认为接口组合是类型匿名组合的一个特定场景，只不过过接口只包含方法，不包含任何成员变量。</p>
+<h2 id="any类型">Any类型</h2>
+<p>由于Go语言中任何对象实例都满足空接口interface{},所以interface{}看起来像是可以指向任何对象的Any类型。</p>
 </div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
-                <span>更新于 2022-05-24</span>
+                <span>更新于 2022-05-25</span>
             </div></div>
         <div class="post-info-line">
             <div class="post-info-md"></div>
             <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://%E6%98%8E%E5%A5%87.top/gotest/" data-title="go学习笔记"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://%E6%98%8E%E5%A5%87.top/gotest/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="http://%E6%98%8E%E5%A5%87.top/gotest/" data-title="go学习笔记"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="http://%E6%98%8E%E5%A5%87.top/gotest/" data-title="go学习笔记"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="http://%E6%98%8E%E5%A5%87.top/gotest/" data-title="go学习笔记"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://%E6%98%8E%E5%A5%87.top/gotest/" data-title="go语言面向对象编程" data-hashtags="go"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://%E6%98%8E%E5%A5%87.top/gotest/" data-hashtag="go"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="http://%E6%98%8E%E5%A5%87.top/gotest/" data-title="go语言面向对象编程"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="http://%E6%98%8E%E5%A5%87.top/gotest/" data-title="go语言面向对象编程"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="http://%E6%98%8E%E5%A5%87.top/gotest/" data-title="go语言面向对象编程"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
             </div>
         </div>
     </div>
 
     <div class="post-info-more">
-        <section class="post-tags"></section>
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/go/">go</a></section>
         <section>
             <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
         </section>
     </div>
 
-    <div class="post-nav"><a href="/golearn/" class="prev" rel="prev" title="go学习笔记"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>go学习笔记</a>
-            <a href="/base/" class="next" rel="next" title="go语言基础知识">go语言基础知识<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+    <div class="post-nav"><a href="/base/" class="prev" rel="prev" title="go语言顺序编程"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>go语言顺序编程</a>
+            <a href="/kubernetes/" class="next" rel="next" title="Kubernetes">Kubernetes<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
 <div id="comments"><div id="disqus_thread" class="comment"></div><noscript>
                 Please enable JavaScript to view the comments powered by <a href="https://disqus.com/?ref_noscript">Disqus</a>.
