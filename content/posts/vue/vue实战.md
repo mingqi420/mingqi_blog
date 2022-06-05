@@ -28,7 +28,7 @@ tags: ["前端","Vue"]
 
 ​	MVVM模式是由经典的软件架构MVC衍生而来的，当View(视图层)变化时，会自动更新到ViewModel(视图模型)，反之亦然，View(视图层)和ViewModel之间通过双向绑定建立联系。
 
-![mvvm](img/mvvm.png)
+![mvvm](/Users/limingqi/Documents/notes/LearnNotes/vue/img/mvvm.png)
 
 该模式相对于MVC模式的优点：
 
@@ -233,7 +233,7 @@ components选项可以局部注册组件，注册后的组件只有在该实例�
 </script>
 ```
 
-​    Vue组件的模板在某些情况下会受到HTML的限制，比如<table>内规定只允许是<tr><td><th>这些元素，所以在table内直接使用组件是无效的，这种情况下需要使用is属性来挂载组件
+​    Vue组件的模板在某些情况下会受到HTML的限制，比如table内规定只允许是tr、td、th、这些元素，所以在table内直接使用组件是无效的，这种情况下需要使用is属性来挂载组件
 
 ```html
       <div id='app-table'> 
@@ -465,7 +465,7 @@ components选项可以局部注册组件，注册后的组件只有在该实例�
 </script>	
 ```
 
-​	在JavaScript中对象和数组是引用类型，指向同一个内存空间，所以props是对象和数组时，在子组件内改变是会影响父组件的。
+​	在JavaScript中对象和数组是引用类型，指向同一个内存空间，所以props是对象和数组时，在子组件内改变是会影响父组件的。	
 
 ### 7.2.3 数据验证
 
@@ -518,11 +518,11 @@ Vue.component('checked-component',{
 
 ​	type也可以是一个自定义构造器，使用instanceof检测。
 
-​	当prop验证失败时，在开发版本下会在控制台抛出一条警告。
+​	当prop验证失败时，在开发版本下会在控制台抛出一条警告。	
 
 ## 7.3组件通信
 
-​	![component](img/component.png)
+​	![component](/Users/limingqi/Documents/notes/LearnNotes/vue/img/component.png)
 
 组件通信可分为父子组件通信，兄弟组件通信，跨级组件通信
 
@@ -681,7 +681,7 @@ Vue.component('checked-component',{
 
 #### 1）中央事件总线bus
 
-​		在Vue.js 2.X中，推荐使用一个空的 Vue 实例作为中央事件总线（ bus），也就是一个中介
+​		在Vue.js 2.X中，推荐使用一个空的 Vue 实例作为中央事件总线（ bus），也就是一个中介	
 
 ```html
 <html>
@@ -726,7 +726,7 @@ Vue.component('checked-component',{
 </script>
 ```
 
-​	首先创建了一个名为bus的空Vue 实例，里面没有任何内容；然后全局定义了组件bus-component；最后创建 Vue 实例 app ，在 app 初始化时，也就是在生命周期
+​	首先创建了一个名为bus的空Vue 实例，里面没有任何内容；然后全局定义了组件bus-component；最后创建 Vue 实例 app ，在 app 初始化时，也就是在生命周期 
 
 mounted 钩子函数里监听了来自 bus 的事件 on-message ，而在组件 component-a 中，点击按钮会通过 bus 把事件 on-message发出去，此时 app 就会接收到来自 bus 的事件，进而在回调里完成自己的业务逻辑。
 
@@ -815,9 +815,9 @@ mounted 钩子函数里监听了来自 bus 的事件 on-message ，而在组件 
 
 ### 7.4.1 什么是slot
 
-​	当需要让组件组合使用，混合父组件的内容与子组件的模板时，就会用到slot，这个过程叫做内容分发（transclusion）。以<app>为例子，他有两个特点:
+​	当需要让组件组合使用，混合父组件的内容与子组件的模板时，就会用到slot，这个过程叫做内容分发（transclusion）。以app为例子，他有两个特点:
 
-- 组件不知道他的挂载点会有什么内容，挂载点的内容是由<app>的父组件决定的
+- 组件不知道他的挂载点会有什么内容，挂载点的内容是由app的父组件决定的
 - 组件很可能有他自己的模板。
 
 ​	props传递数据、events触发事件和solt内容分发就构成了Vue组件的三个API来源，再复杂的组件也是有这三个部分构成的。
@@ -865,7 +865,7 @@ mounted 钩子函数里监听了来自 bus 的事件 on-message ，而在组件 
 
 #### 	单个slot
 
-​	在子组件内使用特殊的<slot>元素就可以为这个子组件开启一个slot(插槽)，在父组件模板里，插入在子组件标签内的所有内容将替代子组件的<slot>标签及它的内容：
+​	在子组件内使用特殊的slot元素就可以为这个子组件开启一个slot(插槽)，在父组件模板里，插入在子组件标签内的所有内容将替代子组件的slot标签及它的内容：
 
 ```html
 <div id='app_slot'>
@@ -900,7 +900,7 @@ mounted 钩子函数里监听了来自 bus 的事件 on-message ，而在组件 
 
 #### 具名Slot
 
-​	给<slot>元素指定一个name后可以分发多个内容，具名Slot可以与单个Slot共存：
+​	给slot元素指定一个name后可以分发多个内容，具名Slot可以与单个Slot共存：
 
 ```vue
 <div id='app_name_slot'>
@@ -932,7 +932,7 @@ mounted 钩子函数里监听了来自 bus 的事件 on-message ，而在组件 
 </scrip>
 ```
 
-​	子组件内声明了三个<slot>元素，其中在<div class="main">内的<slot>没有name特性的，他将作为默认slot出现，父组件没有使用slot特性的元素与内容都将出现在这里，如果没有指定默认的匿名slot，父组件内多余的内容片段都将被抛弃。上例子最终渲染后的结果为：
+​	子组件内声明了三个slot元素，其中在div class="main"内的slot没有name特性的，他将作为默认slot出现，父组件没有使用slot特性的元素与内容都将出现在这里，如果没有指定默认的匿名slot，父组件内多余的内容片段都将被抛弃。上例子最终渲染后的结果为：
 
 ```html
 <div>
@@ -981,7 +981,7 @@ mounted 钩子函数里监听了来自 bus 的事件 on-message ，而在组件 
 </scrip>
 ```
 
-​	观察子组件的模板，在<slot>元素上有一个类似props传递给组件的写法msg="xxx",将数据传到了插槽，父组件中使用了<template>元素，而且拥有一个scope="props"的特性，这里的props只是一个临时变量。template内可以通过它访问来自子组件插槽的数据msg。上面的示例最终渲染的结果为：
+​	观察子组件的模板，在slot元素上有一个类似props传递给组件的写法msg="xxx",将数据传到了插槽，父组件中使用了template元素，而且拥有一个scope="props"的特性，这里的props只是一个临时变量。template内可以通过它访问来自子组件插槽的数据msg。上面的示例最终渲染的结果为：
 
 ```html
 <div class="app_scope_slot">
@@ -1037,7 +1037,7 @@ mounted 钩子函数里监听了来自 bus 的事件 on-message ，而在组件 
 
 ​	子组件mylist-component接收一个来自父级的props数组books，并且将他在name为book的slot上适应v-for指令循环，同时暴露一个变量bookName。
 
-​	如果你仔细揣摩上面的用法，你可能会产生这样的疑问：我直接在父组件上使用v-for不就好了吗，为什么还要绕一步，在子组件里面循环呢？的确，如果知识针对上面的示例，这样写是多此一举的，此例子的主要目的是介绍作用域的用法，并没有加入使用场景，而作用域插槽的使用场景就是既可以复用子组件的slot，又可以使slot内容不一致，如果上例还在其他组件内使用，<li>的内容渲染权是由使用者掌握的，而数据却可以通过临时变量（比如props）从子组件内获取。
+​	如果你仔细揣摩上面的用法，你可能会产生这样的疑问：我直接在父组件上使用v-for不就好了吗，为什么还要绕一步，在子组件里面循环呢？的确，如果知识针对上面的示例，这样写是多此一举的，此例子的主要目的是介绍作用域的用法，并没有加入使用场景，而作用域插槽的使用场景就是既可以复用子组件的slot，又可以使slot内容不一致，如果上例还在其他组件内使用，li的内容渲染权是由使用者掌握的，而数据却可以通过临时变量（比如props）从子组件内获取。
 
 ### 7.4.5 访问slot
 
@@ -1119,6 +1119,39 @@ mounted 钩子函数里监听了来自 bus 的事件 on-message ，而在组件 
 ​	组件递归使用可以用来开发一些具有未知层级关系的独立组件，比如级联选择器和树形控件等。
 
 ## 7.5.2 内联模板
+
+​	组件的模板一般都是在template选项内定义的，Vue提供了一个内联模板的功能，在使用组件时，给组件标签使用inline-template特性，组件就会把它的内容当做模板，而不是把它当做内容分发，这让模板更灵活
+
+```Vue
+<div id="recursion">
+  <child-component inline-template>
+  	<div>
+      <h2>在父组件中定义子组件的模板</h2>
+      <p>{{message}}</p>
+      <p>{{msg}}</p>
+    </div>
+  </child-component>
+</div>
+<scrip>
+  Vue.component('child-component',{
+          data:function(){
+              return:{
+                  msg:’在子组件中声明的数据‘,
+                  default:1
+              }
+          }
+
+      })
+      var recursion=new Vue({
+          el:"#recursion"，
+  				data:{
+  				message:'在父组件中声明的数据'
+  }
+      })
+</scrip>
+```
+
+​	在父组件中声明的数据message和子组件声明的数据msg，两个都可以渲染(如果同名。有限使用子组件的数据)，这反而是内联模板的缺点，就是作用域比较难理解，如果不是非常特殊的场景建议不要使用内联模板。
 
 ## 7.5.3 动态组件
 
