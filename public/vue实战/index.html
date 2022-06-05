@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Vue实战 - 心有玲曦遇见你</title><meta name="Description" content="早起的年轻人做的网站"><meta property="og:title" content="Vue实战" />
+<meta property="og:description" content="一 初识Vue.js 1、Vue.js是什么？ ​	简单小巧的核心，渐进式技术栈，足以应付任何规模的应用。
+​	使用Vue.js可以让web开发变得简单，同时也颠覆了传统前端开发模式。他提供了现代Web开发中常见的高级功能：
+ 解耦视图与数据 可复用的组件 前端路由 状态管理 虚拟DOM  1.1.1 MVVM模式 ​	MVVM模式是由经典的软件架构MVC衍生而来的，当View(视图层)变化时，会自动更新到ViewModel(视图模型)，反之亦然，View(视图层)和ViewModel之间通过双向绑定建立联系。
+该模式相对于MVC模式的优点：
+1.低耦合，可重用性，model以及view实现分离状态
+2.双向绑定，在mvc中只能是由原始数据控制产生数据，在mvvm模式中可以实现视图与数据双向的绑定
+3.减少dom操作。解决了数据频繁更新的问题。
+2、如何使用Vue.js 1.2.1 通过script加载CDN文件 1 2 3 4  &lt;!--自动识别最新稳定版本的Vue.js--&gt; &lt;script src=&#34;https://unpkg.com/vue/dist/vue.min.js&#34;&gt;&lt;/script&gt; &lt;!--指定某个具体版本的Vue.js--&gt; &lt;script src=&#34;https://unpkg.com/vue@2.1.6/dist/vue.min.js&#34;&gt;&lt;/script&gt;   1.2.2 将代码下载下来，通过相对路径来引用vue.js文件 1.2.3 Vue但文件的形式配合webpack使用 二 数据绑定和第一个Vue应用 2.1 Vue实例与数据绑定 2.1.1 实例与数据 ​	通过构造函数Vue创建一个Vue的根实例，并启动Vue应用：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111  &lt;html&gt; &lt;head&gt; &lt;script src=&#39;package2." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://%E6%98%8E%E5%A5%87.top/vue%E5%AE%9E%E6%88%98/" /><meta property="og:image" content="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-06-05T13:58:22+08:00" />
+<meta property="article:modified_time" content="2022-06-05T13:58:22+08:00" /><meta property="og:site_name" content="My cool site" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"/>
+
+<meta name="twitter:title" content="Vue实战"/>
+<meta name="twitter:description" content="一 初识Vue.js 1、Vue.js是什么？ ​	简单小巧的核心，渐进式技术栈，足以应付任何规模的应用。
+​	使用Vue.js可以让web开发变得简单，同时也颠覆了传统前端开发模式。他提供了现代Web开发中常见的高级功能：
+ 解耦视图与数据 可复用的组件 前端路由 状态管理 虚拟DOM  1.1.1 MVVM模式 ​	MVVM模式是由经典的软件架构MVC衍生而来的，当View(视图层)变化时，会自动更新到ViewModel(视图模型)，反之亦然，View(视图层)和ViewModel之间通过双向绑定建立联系。
+该模式相对于MVC模式的优点：
+1.低耦合，可重用性，model以及view实现分离状态
+2.双向绑定，在mvc中只能是由原始数据控制产生数据，在mvvm模式中可以实现视图与数据双向的绑定
+3.减少dom操作。解决了数据频繁更新的问题。
+2、如何使用Vue.js 1.2.1 通过script加载CDN文件 1 2 3 4  &lt;!--自动识别最新稳定版本的Vue.js--&gt; &lt;script src=&#34;https://unpkg.com/vue/dist/vue.min.js&#34;&gt;&lt;/script&gt; &lt;!--指定某个具体版本的Vue.js--&gt; &lt;script src=&#34;https://unpkg.com/vue@2.1.6/dist/vue.min.js&#34;&gt;&lt;/script&gt;   1.2.2 将代码下载下来，通过相对路径来引用vue.js文件 1.2.3 Vue但文件的形式配合webpack使用 二 数据绑定和第一个Vue应用 2.1 Vue实例与数据绑定 2.1.1 实例与数据 ​	通过构造函数Vue创建一个Vue的根实例，并启动Vue应用：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111  &lt;html&gt; &lt;head&gt; &lt;script src=&#39;package2."/>
+<meta name="application-name" content="LoveIt">
+<meta name="apple-mobile-web-app-title" content="LoveIt"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="canonical" href="http://%E6%98%8E%E5%A5%87.top/vue%E5%AE%9E%E6%88%98/" /><link rel="prev" href="http://%E6%98%8E%E5%A5%87.top/%E8%BF%9B%E9%98%B6%E7%AF%87/" /><link rel="next" href="http://%E6%98%8E%E5%A5%87.top/godifferentwithothers/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Vue实战",
+        "inLanguage": "",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/%E6%98%8E%E5%A5%87.top\/vue%E5%AE%9E%E6%88%98\/"
+        },"image": ["http:\/\/%E6%98%8E%E5%A5%87.top\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "前端, Vue","wordcount":  2149 ,
+        "url": "http:\/\/%E6%98%8E%E5%A5%87.top\/vue%E5%AE%9E%E6%88%98\/","datePublished": "2022-06-05T13:58:22+08:00","dateModified": "2022-06-05T13:58:22+08:00","publisher": {
+            "@type": "Organization",
+            "name": "李明奇","logo": "https:\/\/limingqi.oss-cn-beijing.aliyuncs.com\/mingqi_blog\/img\/logo.jpg"},"author": {
+                "@type": "Person",
+                "name": "李明奇"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="心有玲曦遇见你"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"
+        data-srcset="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg, https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg 1.5x, https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg 2x"
+        data-sizes="auto"
+        alt="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"
+        title="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg" /><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/" title="标签"> 标签 </a><a class="menu-item" href="/categories/" title="分类"> 分类 </a><a class="menu-item" href="/about/" title="关于我"> 关于 </a><a class="menu-item" href="https://github.com/mingqi420" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i> Github </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="心有玲曦遇见你"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"
+        data-srcset="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg, https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg 1.5x, https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg 2x"
+        data-sizes="auto"
+        alt="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg"
+        title="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/logo.jpg" /><span class="header-title-pre"><i class='far fa-kiss-wink-heart fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="标签">标签</a><a class="menu-item" href="/categories/" title="分类">分类</a><a class="menu-item" href="/about/" title="关于我">关于</a><a class="menu-item" href="https://github.com/mingqi420" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>Github</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Vue实战</h1><h2 class="single-subtitle">Vue入门实战笔记</h2><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>李明奇</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>程序设计</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-06-05">2022-06-05</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2149 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 11 分钟&nbsp;<span id="/vue%E5%AE%9E%E6%88%98/" class="leancloud_visitors" data-flag-title="Vue实战">
+                        <i class="far fa-eye fa-fw" aria-hidden="true"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-初识vuejs">一 初识Vue.js</a>
+      <ul>
+        <li><a href="#1vuejs是什么">1、Vue.js是什么？</a>
+          <ul>
+            <li><a href="#111-mvvm模式">1.1.1 MVVM模式</a></li>
+          </ul>
+        </li>
+        <li><a href="#2如何使用vuejs">2、如何使用Vue.js</a>
+          <ul>
+            <li><a href="#121-通过script加载cdn文件">1.2.1 通过script加载CDN文件</a></li>
+            <li><a href="#122--将代码下载下来通过相对路径来引用vuejs文件">1.2.2  将代码下载下来，通过相对路径来引用vue.js文件</a></li>
+            <li><a href="#123-vue但文件的形式配合webpack使用">1.2.3 Vue但文件的形式配合webpack使用</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#二-数据绑定和第一个vue应用">二 数据绑定和第一个Vue应用</a>
+      <ul>
+        <li><a href="#21-vue实例与数据绑定">2.1 Vue实例与数据绑定</a>
+          <ul>
+            <li><a href="#211-实例与数据">2.1.1 实例与数据</a></li>
+          </ul>
+        </li>
+        <li><a href="#22-指令与事件">2.2 指令与事件</a></li>
+        <li><a href="#23-语法糖">2.3 语法糖</a></li>
+      </ul>
+    </li>
+    <li><a href="#三-计算属性">三 计算属性</a></li>
+    <li><a href="#四-v-bind及class与style绑定">四 v-bind及class与style绑定</a></li>
+    <li><a href="#五-内置指令">五 内置指令</a></li>
+    <li><a href="#六-表单与v-model">六 表单与v-model</a></li>
+    <li><a href="#七-组件详解">七 组件详解</a>
+      <ul>
+        <li><a href="#71组件与复用">7.1组件与复用</a>
+          <ul>
+            <li><a href="#711组件用法">7.1.1组件用法</a></li>
+          </ul>
+        </li>
+        <li><a href="#72-使用props传递数据">7.2 使用props传递数据</a>
+          <ul>
+            <li><a href="#721-基本用法">7.2.1 基本用法</a></li>
+            <li><a href="#722-单项数据流">7.2.2 单项数据流</a></li>
+            <li><a href="#723-数据验证">7.2.3 数据验证</a></li>
+          </ul>
+        </li>
+        <li><a href="#73组件通信">7.3组件通信</a>
+          <ul>
+            <li><a href="#731-自定义事件">7.3.1 自定义事件</a></li>
+            <li><a href="#732-使用v-model">7.3.2 使用v-model</a></li>
+            <li><a href="#733-非父子组件通信">7.3.3 非父子组件通信</a>
+              <ul>
+                <li><a href="#1中央事件总线bus">1）中央事件总线bus</a></li>
+                <li><a href="#2父链">2）父链</a></li>
+                <li><a href="#3子组件索引">3）子组件索引</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><a href="#74-使用slot分发内容">7.4 使用slot分发内容</a>
+          <ul>
+            <li><a href="#741-什么是slot">7.4.1 什么是slot</a></li>
+          </ul>
+        </li>
+        <li><a href="#742-作用域">7.4.2 作用域</a>
+          <ul>
+            <li><a href="#743-slot用法">7.4.3 slot用法</a>
+              <ul>
+                <li><a href="#单个slot">单个slot</a></li>
+                <li><a href="#具名slot">具名Slot</a></li>
+              </ul>
+            </li>
+            <li><a href="#744-作用域插槽">7.4.4 作用域插槽</a></li>
+            <li><a href="#745-访问slot">7.4.5 访问slot</a></li>
+          </ul>
+        </li>
+        <li><a href="#75-组件的高级用法">7.5 组件的高级用法</a></li>
+        <li><a href="#751-递归组件">7.5.1 递归组件</a></li>
+        <li><a href="#752-内联模板">7.5.2 内联模板</a></li>
+        <li><a href="#753-动态组件">7.5.3 动态组件</a></li>
+        <li><a href="#754-异步组件">7.5.4 异步组件</a></li>
+      </ul>
+    </li>
+    <li><a href="#八-自定义指令">八 自定义指令</a></li>
+    <li><a href="#render函数">Render函数</a></li>
+    <li><a href="#使用webpack">使用webpack</a></li>
+    <li><a href="#插件">插件</a></li>
+    <li><a href="#iview经典组件剖析">iView经典组件剖析</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="一-初识vuejs">一 初识Vue.js</h1>
+<h2 id="1vuejs是什么">1、Vue.js是什么？</h2>
+<p>​	简单小巧的核心，渐进式技术栈，足以应付任何规模的应用。</p>
+<p>​	使用Vue.js可以让web开发变得简单，同时也颠覆了传统前端开发模式。他提供了现代Web开发中常见的高级功能：</p>
+<ul>
+<li>解耦视图与数据</li>
+<li>可复用的组件</li>
+<li>前端路由</li>
+<li>状态管理</li>
+<li>虚拟DOM</li>
+</ul>
+<h3 id="111-mvvm模式">1.1.1 MVVM模式</h3>
+<p>​	MVVM模式是由经典的软件架构MVC衍生而来的，当View(视图层)变化时，会自动更新到ViewModel(视图模型)，反之亦然，View(视图层)和ViewModel之间通过双向绑定建立联系。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="img/mvvm.png"
+        data-srcset="img/mvvm.png, img/mvvm.png 1.5x, img/mvvm.png 2x"
+        data-sizes="auto"
+        alt="img/mvvm.png"
+        title="mvvm" /></p>
+<p>该模式相对于MVC模式的优点：</p>
+<p>1.低耦合，可重用性，model以及view实现分离状态</p>
+<p>2.双向绑定，在mvc中只能是由原始数据控制产生数据，在mvvm模式中可以实现视图与数据双向的绑定</p>
+<p>3.减少dom操作。解决了数据频繁更新的问题。</p>
+<h2 id="2如何使用vuejs">2、如何使用Vue.js</h2>
+<h3 id="121-通过script加载cdn文件">1.2.1 通过script加载CDN文件</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="c">&lt;!--自动识别最新稳定版本的Vue.js--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;https://unpkg.com/vue/dist/vue.min.js&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!--指定某个具体版本的Vue.js--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;https://unpkg.com/vue@2.1.6/dist/vue.min.js&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="122--将代码下载下来通过相对路径来引用vuejs文件">1.2.2  将代码下载下来，通过相对路径来引用vue.js文件</h3>
+<h3 id="123-vue但文件的形式配合webpack使用">1.2.3 Vue但文件的形式配合webpack使用</h3>
+<h1 id="二-数据绑定和第一个vue应用">二 数据绑定和第一个Vue应用</h1>
+<h2 id="21-vue实例与数据绑定">2.1 Vue实例与数据绑定</h2>
+<h3 id="211-实例与数据">2.1.1 实例与数据</h3>
+<p>​	通过构造函数Vue创建一个Vue的根实例，并启动Vue应用：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#39;package2.64/dist/vue.js&#39;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">          {{message}}
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app-2&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">&lt;</span><span class="nt">span</span> <span class="na">v-bind:title</span><span class="o">=</span><span class="s">&#34;message&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            鼠标悬停几秒钟查看此处动态绑定的提示信息！ {{message}}
+</span></span><span class="line"><span class="cl">          <span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app-3&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">&lt;</span><span class="nt">p</span> <span class="na">v-if</span><span class="o">=</span><span class="s">&#34;seen&#34;</span><span class="p">&gt;</span>现在看到我了<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app-4&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">&lt;</span><span class="nt">ol</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">              <span class="p">&lt;</span><span class="nt">li</span> <span class="na">v-for</span><span class="o">=</span><span class="s">&#34;todo in todos&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                {{todo.text}}
+</span></span><span class="line"><span class="cl">              <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">              
+</span></span><span class="line"><span class="cl">          <span class="p">&lt;/</span><span class="nt">ol</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app-5&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">       <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">           {{message}}
+</span></span><span class="line"><span class="cl">       <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">       <span class="p">&lt;</span><span class="nt">button</span> <span class="na">v-on:click</span><span class="o">=</span><span class="s">&#34;reverseMessage&#34;</span><span class="p">&gt;</span>翻转消息<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app-6&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>{{ message }}<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">input</span> <span class="na">v-model</span><span class="o">=</span><span class="s">&#34;message&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app-7&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="p">&lt;</span><span class="nt">ol</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">              <span class="p">&lt;</span><span class="nt">todo-item</span> <span class="na">v-for</span><span class="o">=</span><span class="s">&#34;item in groceryList&#34;</span>
+</span></span><span class="line"><span class="cl">                         <span class="na">v-bind:todo</span><span class="o">=</span><span class="s">&#34;item&#34;</span>
+</span></span><span class="line"><span class="cl">                         <span class="na">v-bind:key</span><span class="o">=</span><span class="s">&#34;item.id&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">              <span class="p">&lt;/</span><span class="nt">todo-item</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">              
+</span></span><span class="line"><span class="cl">          <span class="p">&lt;/</span><span class="nt">ol</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">message</span><span class="o">:</span><span class="s1">&#39;Hello Vue&#39;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app2</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app-2&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">message</span><span class="o">:</span> <span class="s1">&#39;页面加载于 &#39;</span> <span class="o">+</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">toLocaleString</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app3</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app-3&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">seen</span><span class="o">:</span><span class="kc">false</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app4</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app-4&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">todos</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span><span class="nx">text</span><span class="o">:</span><span class="s1">&#39;c#&#39;</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span><span class="nx">text</span><span class="o">:</span><span class="s2">&#34;Java&#34;</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span><span class="nx">text</span><span class="o">:</span><span class="s2">&#34;go&#34;</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span><span class="nx">text</span><span class="o">:</span><span class="s2">&#34;mysql&#34;</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span><span class="nx">text</span><span class="o">:</span><span class="s2">&#34;redis&#34;</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span><span class="nx">text</span><span class="o">:</span><span class="s2">&#34;docker&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app5</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span> <span class="s1">&#39;#app-5&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">message</span><span class="o">:</span> <span class="s1">&#39;Hello Vue.js!&#39;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">methods</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">reverseMessage</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">this</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">).</span><span class="nx">reverse</span><span class="p">().</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app6</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span> <span class="s1">&#39;#app-6&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">message</span><span class="o">:</span> <span class="s1">&#39;Hello Vue!&#39;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//组件化应用构建
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;todo-item&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//todo-item组件现在接受一个prop，
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">props</span><span class="o">:</span><span class="p">[</span><span class="s1">&#39;todo&#39;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;&lt;li&gt;{{todo.text}}&lt;/li&gt;&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app7</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span> <span class="s1">&#39;#app-7&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">groceryList</span><span class="o">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">text</span><span class="o">:</span> <span class="s1">&#39;蔬菜&#39;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">text</span><span class="o">:</span> <span class="s1">&#39;奶酪&#39;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">            <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">text</span><span class="o">:</span> <span class="s1">&#39;随便其它什么人吃的东西&#39;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="22-指令与事件">2.2 指令与事件</h2>
+<h2 id="23-语法糖">2.3 语法糖</h2>
+<h1 id="三-计算属性">三 计算属性</h1>
+<h1 id="四-v-bind及class与style绑定">四 v-bind及class与style绑定</h1>
+<h1 id="五-内置指令">五 内置指令</h1>
+<h1 id="六-表单与v-model">六 表单与v-model</h1>
+<h1 id="七-组件详解">七 组件详解</h1>
+<p>​	组件(Component)是Vue.js最核心的功能，也是整个框架设计最精彩的地方</p>
+<h2 id="71组件与复用">7.1组件与复用</h2>
+<h3 id="711组件用法">7.1.1组件用法</h3>
+<p>​	组件需要注册后才可以使用，注册有全局注册和局部注册两种方式，全局注册后，任何Vue示例都可以使用</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"> <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">my-component</span><span class="p">&gt;&lt;/</span><span class="nt">my-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"> <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;my-component&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//选项template的DOM元素必须被一个元素包含
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;&lt;div&gt;这里是组件的内容&lt;/div&gt;&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">      <span class="kd">var</span> <span class="nx">app</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>components选项可以局部注册组件，注册后的组件只有在该实例作用域下有效。组件中也可以使用components选项来注册组件，使组件可以嵌套</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"> <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app-child&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">child-component</span><span class="p">&gt;&lt;/</span><span class="nt">child-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"> <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">Child</span><span class="o">=</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;&lt;div&gt;这里是Child组件的内容&lt;/div&gt;&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">appChild</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app-child&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">components</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="s1">&#39;child-component&#39;</span><span class="o">:</span><span class="nx">Child</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​    Vue组件的模板在某些情况下会受到HTML的限制，比如<table>内规定只允许是<tr><td><th>这些元素，所以在table内直接使用组件是无效的，这种情况下需要使用is属性来挂载组件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app-table&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">table</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="c">&lt;!--tbody在渲染的时候会被替换为组件的内容，常见的限制元素还有ul、ol、select--&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">tbody</span> <span class="na">is</span><span class="o">=</span><span class="s">&#34;table-component&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">tbody</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">table_component</span><span class="o">=</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;&lt;div&gt;这里是Table组件的内容&lt;/div&gt;&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">appTable</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app-table&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">components</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="s1">&#39;table-component&#39;</span><span class="o">:</span><span class="nx">table_component</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>除了template，组件中还可以像VUE实例那样使用其他的选项，比如data、computed、methods等。但是在使用data时，data必须是函数，然后将数据return</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app-data&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">data-component</span><span class="p">&gt;&lt;/</span><span class="nt">data-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;data-component&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//选项template的DOM元素必须被一个元素包含
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;&lt;div&gt;{{message}}&lt;/div&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span><span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">message</span><span class="o">:</span><span class="s2">&#34;data组件内容&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">appData</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app-data&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	JavaScript对象时引用关系，所以如果return出来的对象引用了外部的一个对象，那么这个对象就是共享的，任何一个地方修改都会同步</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app-share&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">share-component</span><span class="p">&gt;&lt;/</span><span class="nt">share-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">share-component</span><span class="p">&gt;&lt;/</span><span class="nt">share-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">share-component</span><span class="p">&gt;&lt;/</span><span class="nt">share-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">data</span><span class="o">=</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">counter</span><span class="o">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;share-component&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//选项template的DOM元素必须被一个元素包含
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;&lt;button @click=&#34;counter++&#34;&gt;{{counter}}&lt;/div&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">data</span><span class="o">:</span><span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="nx">data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">appShare</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app-share&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	组件使用了三次，但是点击任一个button，三个数字都会增加，那是因为组件data引用的事外部对象。如果想要达到预想的效果需要给组件返回一个新的data对象来独立。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app-share&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">share-component</span><span class="p">&gt;&lt;/</span><span class="nt">share-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">share-component</span><span class="p">&gt;&lt;/</span><span class="nt">share-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">share-component</span><span class="p">&gt;&lt;/</span><span class="nt">share-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">data</span><span class="o">=</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">counter</span><span class="o">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;share-component&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//选项template的DOM元素必须被一个元素包含
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;&lt;button @click=&#34;counter++&#34;&gt;{{counter}}&lt;/div&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">data</span><span class="o">:</span><span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                   <span class="nx">counter</span><span class="o">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">                <span class="p">};</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">appShare</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app-share&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	这样，点击三个按钮就互不影响了，达到完全复用的目的</p>
+<h2 id="72-使用props传递数据">7.2 使用props传递数据</h2>
+<h3 id="721-基本用法">7.2.1 基本用法</h3>
+<p>​	组件不仅仅是要把模板的内容进行复用，更重要的事组件间要进行通信，通常父组件的模板中包含子组件，父组件要正向的向子组件传递数据或参数，子组件接收后根据参数的不同来渲染不同的内容或操作，这个正向传递参数的过程就是通过props来实现的。</p>
+<p>​	在组件中，使用选项props来声明需要从父级接收的数据。props的值可以是字符串数组，也可以是对象</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"> <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">my-component</span> <span class="na">message</span><span class="o">=</span><span class="s">&#34;来自父组件的数据&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">my-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"> <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;my-component&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//选项template的DOM元素必须被一个元素包含
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;&lt;div&gt;这里是组件的内容&lt;/div&gt;&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">      <span class="kd">var</span> <span class="nx">app</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>	
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>渲染后的结果为：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"> <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>来自父组件的数据<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"> <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	props中声明的数据与组件data函数return的数据的主要区别是前者来自父级，而后者是组件自己的数据。作用域是组件本身。这两种数据都可以在模板template及计算属性computed和方法methods中使用。</p>
+<p>​	由于HTML特性是不区分大小写，当使用DOM模板时，驼峰命名的props名称要转换为短横杆分割命名</p>
+<p>​	有时候传递的数据并不是直接写死的，而是来自父级的的动态数据，这时可以使用v-bind来动态绑定props的值，当父组件的数据变化时，也会传递给子组件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app-databinding&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">    <span class="c">&lt;!-- 这里用 v-model绑定了父级的数据parentMessage，当通过输入框输入任意内容时，子组件接收到的props“message”也会实时相应，并更新组件模板--&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text&#34;</span> <span class="na">v-model</span><span class="o">=</span><span class="s">&#34;parentMessage&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">databinding-component</span> <span class="na">:message</span><span class="o">=</span><span class="s">&#34;parentMessage&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">databinding-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;databinding-component&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//选项template的DOM元素必须被一个元素包含
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;&lt;div&gt;{{message}}&lt;/div&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">props</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">      <span class="kd">var</span> <span class="nx">app</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">var</span> <span class="nx">appDatabinding</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app-databinding&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">parentMessage</span><span class="o">:</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>	
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	注意，如果直接传递数字、布尔值、数组、对象，而且不使用v-bind，传递的仅是字符串。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app-nobinding&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">nobinding-component</span> <span class="na">message</span><span class="o">=</span><span class="s">&#34;[1,2,3]&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">nobinding-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">nobinding-component</span> <span class="na">:message</span><span class="o">=</span><span class="s">&#34;[1,2,3]&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">nobinding-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//同一个组件使用了两次，区别仅仅是第二个使用的是 v-bind ，渲染后的结果，第一个是7，，第二个才是数组的长度 3,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;nobinding-component&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//选项template的DOM元素必须被一个元素包含
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;&lt;div&gt;{{message.length}}&lt;/div&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">props</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">      <span class="kd">var</span> <span class="nx">app</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app_nobinding</span> <span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app-nobinding&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>	
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="722-单项数据流">7.2.2 单项数据流</h3>
+<p>​	1）父组件传递初始值进来，子组件将他作为初始值保存起来，在自己的作用域下可以随意使用和修改，这种情况下可以在组件data内再声明一个数据，引用父组件的prop就可以了。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app-initcount&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">initcount-component</span> <span class="na">:initCount</span><span class="o">=</span><span class="s">&#34;1&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">initcount-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">     <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;initcount-component&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//选项template的DOM元素必须被一个元素包含
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;&lt;div&gt;{{count}}&lt;/div&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">props</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;initCount&#39;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">count</span><span class="o">:</span><span class="k">this</span><span class="p">.</span><span class="nx">initCount</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app_initcount</span> <span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app-initcount&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>	
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	2）prop作为需要被转变的原始值传入，这种情况用计算属性就可以了。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">initcount-component</span> <span class="nt">:width</span><span class="s">=&#34;1&#34;</span><span class="p">&gt;</span><span class="o">&lt;</span><span class="err">/initcount-component&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">     <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;initcount-component&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;&lt;div :style=&#34;style&#34;&gt;{{组件内容}}&lt;/div&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">props</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">computed</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">style</span><span class="o">:</span><span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="c1">//因为CSS传递宽度要带单位px，但是每次都写都太麻烦，而且数值一般都是不带单位的，所以同一在组件内使用计算属性就可以了。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="nx">width</span><span class="o">:</span><span class="k">this</span><span class="p">.</span><span class="nx">width</span><span class="o">+</span><span class="s1">&#39;px&#39;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">          <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app_initcount</span> <span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s1">&#39;#app&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>	
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	在JavaScript中对象和数组是引用类型，指向同一个内存空间，所以props是对象和数组时，在子组件内改变是会影响父组件的。</p>
+<h3 id="723-数据验证">7.2.3 数据验证</h3>
+<p>​	一般当组件需要提供给别人使用时，推荐都进行数据验证，比如某个数据必须是数字类型，如果传入的是字符串，就会在控制台给出警告，以下是几个prop的示例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl"><span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;checked-component&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">props</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//必须是数字类型
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nx">propA</span><span class="o">:</span> <span class="nb">Number</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//必须是字符串或数字类型
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nx">propB</span><span class="o">:</span> <span class="p">[</span><span class="nb">String</span><span class="p">,</span><span class="nb">Number</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//布尔值，如果未定义，默认为true
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nx">PropC</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">type</span><span class="o">:</span><span class="nb">Boolean</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="k">default</span><span class="o">:</span><span class="kc">true</span>
+</span></span><span class="line"><span class="cl">            <span class="p">},</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//数字，必传
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nx">PropD</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">type</span><span class="o">:</span><span class="nb">Number</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">required</span><span class="o">:</span><span class="kc">true</span>
+</span></span><span class="line"><span class="cl">            <span class="p">},</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//如果是数组或对象，默认值必须是一个函数来返回
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nx">PropE</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">type</span><span class="o">:</span><span class="nb">Array</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="k">default</span><span class="o">:</span><span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="p">[];</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">},</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//自定义一个验证函数。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nx">PropF</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">validator</span><span class="o">:</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">return</span> <span class="nx">value</span><span class="o">&gt;</span><span class="mi">10</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	验证的type类型可以是：</p>
+<ul>
+<li>String</li>
+<li>Number</li>
+<li>Boolean</li>
+<li>Object</li>
+<li>Array</li>
+<li>Function</li>
+</ul>
+<p>​	type也可以是一个自定义构造器，使用instanceof检测。</p>
+<p>​	当prop验证失败时，在开发版本下会在控制台抛出一条警告。</p>
+<h2 id="73组件通信">7.3组件通信</h2>
+<p>​	<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="img/component.png"
+        data-srcset="img/component.png, img/component.png 1.5x, img/component.png 2x"
+        data-sizes="auto"
+        alt="img/component.png"
+        title="component" /></p>
+<p>组件通信可分为父子组件通信，兄弟组件通信，跨级组件通信</p>
+<h3 id="731-自定义事件">7.3.1 自定义事件</h3>
+<p>​	当子组件需要向父组件传递数据时，就要用到自定义事件，v-on除了监听DOM事件外，还可以用于子组件之间的自定义事件，</p>
+<p>​	如果你了解过JavaScript的设计模式-观察者模式，一定知道dispatchEvent和addEventListener这两个方法，Vue也有与之类似的一套模式，子组件用$emit()来触发事件，父组件用$on()来监听子组件的事件</p>
+<p>​	父组件也可以直接在子组件的自定义标签上使用v-on来监听子组件触发的自定义事件，示例代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#39;package2.64/dist/vue.js&#39;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>总数：{{total}}<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">customevent-component</span> <span class="err">@</span><span class="na">increase</span><span class="o">=</span><span class="s">&#34;handleGetTotal&#34;</span> <span class="err">@</span><span class="na">reduce</span><span class="o">=</span><span class="s">&#34;handleGetTotal&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">customevent-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;customevent-component&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//选项template的DOM元素必须被一个元素包含
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;&lt;div&gt;&lt;button @click=&#34;handleIncrease&#34;&gt;+1&lt;/button&gt;&lt;button @click=&#34;handleReduce&#34;&gt;-1&lt;/button&gt;sss&lt;/div&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">counter</span><span class="o">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">methods</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">handleIncrease</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">this</span><span class="p">.</span><span class="nx">counter</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">                <span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">&#39;increase&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">counter</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">},</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">handleReduce</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">this</span><span class="p">.</span><span class="nx">counter</span><span class="o">--</span>
+</span></span><span class="line"><span class="cl">                <span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">counter</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span> <span class="s2">&#34;#app&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">total</span><span class="o">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">methods</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">handleGetTotal</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">total</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">this</span><span class="p">.</span><span class="nx">total</span> <span class="o">=</span> <span class="nx">total</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	上面示例中，子组件有两个按钮，分别实现加1和减1的效果改变组件的data &ldquo;counter&quot;后通过$emit()再把它传递给父组件，父组件用v-on：increase和v-on:reduce(示例使用的事语法糖)。$emit()方法的第一个参数时自定义事件的名称，后面的参数时要传递的数据，可以不填或者填多个。</p>
+<p>​	除了用v-on在组件上监听自定义事件外，也可以监听DOM事件，这时，可以使用.native修饰符表示监听的是一个原生事件，监听的是该组件的根元素：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">my-component</span> <span class="na">v-on:click</span><span class="err">.</span><span class="na">native</span><span class="o">=</span><span class="s">”handleClick”</span> <span class="p">&gt;&lt;/</span><span class="nt">my-component</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="732-使用v-model">7.3.2 使用v-model</h3>
+<p>​	Vue2.x可以在自定义组件上使用v-model指令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#39;package2.64/dist/vue.js&#39;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app-custom-event-model&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>总数：{{total}}<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">           <span class="p">&lt;</span><span class="nt">customeventmodel-component</span> <span class="na">v-model</span><span class="o">=</span><span class="s">&#34;total&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">customeventmodel-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;customeventmodel-component&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//选项template的DOM元素必须被一个元素包含
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;&lt;div&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &lt;button @click=&#34;handleClick&#34;&gt;+1&lt;/button&gt;&lt;button\
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &lt;/div&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">counter</span><span class="o">:</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">handleClick</span><span class="o">:</span><span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">                <span class="k">this</span><span class="p">.</span><span class="nx">counter</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">                <span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">,</span><span class="k">this</span><span class="p">.</span><span class="nx">counter</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">appcustomevent</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s2">&#34;#app-custom-event-model&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">total</span><span class="o">:</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	仍然是按钮加1的效果，不过这次组件$emit()的事件名是特殊的input，在使用组件的父级，并没有在组件上使用@input=&ldquo;handler&rdquo;,而是直接使用了v-model绑定的一个数据total。这也算是一个语法糖，因为上面的示例可以间接地使用自定义事件来实现。</p>
+<p>​	v-model还可以用来创建自定义的表单输入组件，进行数据双向绑定：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">     <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app-two-way-model&#39;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>总数：{{total}}<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">           <span class="p">&lt;</span><span class="nt">customtwoway-component</span> <span class="na">v-model</span><span class="o">=</span><span class="s">&#34;total&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">customtwoway-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">           <span class="p">&lt;</span><span class="nt">button</span> <span class="err">@</span><span class="na">click</span><span class="o">=</span><span class="s">&#34;handleReduce&#34;</span><span class="p">&gt;</span>-1<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;customtwoway-component&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;&lt;input :value=”value” @input=”updateValue”&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">props</span><span class="o">:</span> <span class="p">[</span><span class="s2">&#34;value&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">methods</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">counter</span><span class="o">:</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">updateValue</span><span class="o">:</span><span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">                <span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">,</span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app_two_way</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span><span class="s2">&#34;#app-two-way-model&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">total</span><span class="o">:</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">handleReduce</span><span class="o">:</span><span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">                <span class="k">this</span><span class="p">.</span><span class="nx">total</span><span class="o">--</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	实现这样一个具有双向绑定的v-model组件要满足下面两个要求：</p>
+<ul>
+<li>接收一个value属性。</li>
+<li>在有新的value时触发input事件。</li>
+</ul>
+<h3 id="733-非父子组件通信">7.3.3 非父子组件通信</h3>
+<h4 id="1中央事件总线bus">1）中央事件总线bus</h4>
+<p>​		在Vue.js 2.X中，推荐使用一个空的 Vue 实例作为中央事件总线（ bus），也就是一个中介</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#39;package2.64/dist/vue.js&#39;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>{{message}}<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">bus-component</span><span class="p">&gt;&lt;/</span><span class="nt">bus-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">var</span> <span class="nx">bus</span><span class="o">=</span><span class="k">new</span> <span class="nx">Vue</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;bus-component&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//选项template的DOM元素必须被一个元素包含
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;&lt;button @click=&#34;handleEvent&#34;&gt;传递事件&lt;/button&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">methods</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">handleEvent</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">              <span class="c1">//点击按钮就会通过bus把事件on-message发出去
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="nx">bus</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">&#39;on-message&#39;</span><span class="p">,</span> <span class="s1">&#39;来自组件bus-component的内容&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span> <span class="s2">&#34;#app&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">message</span><span class="o">:</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">//在app初始化时，也就是在声明周期mounted钩子函数里面监听了来自bus的事件on-message，
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">mounted</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="kd">var</span> <span class="nx">_this</span><span class="o">=</span><span class="k">this</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">bus</span><span class="p">.</span><span class="nx">$on</span><span class="p">(</span><span class="s1">&#39;on-message&#39;</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">msg</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">_this</span><span class="p">.</span><span class="nx">message</span><span class="o">=</span><span class="nx">msg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	首先创建了一个名为bus的空Vue 实例，里面没有任何内容；然后全局定义了组件bus-component；最后创建 Vue 实例 app ，在 app 初始化时，也就是在生命周期</p>
+<p>mounted 钩子函数里监听了来自 bus 的事件 on-message ，而在组件 component-a 中，点击按钮会通过 bus 把事件 on-message发出去，此时 app 就会接收到来自 bus 的事件，进而在回调里完成自己的业务逻辑。</p>
+<p>​	这种方法巧妙而轻巧地市县了任何组件间的通信，包括父子、兄弟、跨级。如果深入使用，可以拓展bus实例，为其添加Vue的各种选项，这些都可以是公用的。在业务中，尤其是协同开发使其非常有用，因为经常需要共享一些通用的信息，比如用户登录的昵称、性别、邮箱等，还有用的授权token等，只需要在初始化的时候让bus获取一次，任何时间，任何组件就可以从中直接使用了。</p>
+<h4 id="2父链">2）父链</h4>
+<p>​	在子组件中使用this.$parent可以直接访问该组件的父示例或者组件，父组件也可以通过this.$children访问它的所有子组件，而且可以递归向上或向下无限访问，直到根示例或者最内层的组件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"> <span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#39;package2.64/dist/vue.js&#39;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app_parent&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>{{message}}<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">parent-component</span><span class="p">&gt;&lt;/</span><span class="nt">parent-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">   <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;parent-component&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;&lt;button @click=&#34;handleEvent&#34;&gt;通过父链直接修改数据&lt;/button&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">methods</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">handleEvent</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">               <span class="k">this</span><span class="p">.</span><span class="nx">$parent</span><span class="p">.</span><span class="nx">message</span><span class="o">=</span><span class="s2">&#34;来自子组件bus-component修改的内容&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span> <span class="s2">&#34;#app_parent&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">message</span><span class="o">:</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	尽管Vue允许这样操作，但是在业务中，子组件应该尽可能地避免依赖父组件的数据，更不应该主动修改它的数据，因为这样使得父子组件紧耦合，只看父组件，很难理解父组件的状态，因为它可能被任意组件修改，理想情况下，只有组件自己能修改他的状态，父子组件最好还是通过props和$emit来通信。</p>
+<h4 id="3子组件索引">3）子组件索引</h4>
+<p>​	当子组件较多时，通过this.$children来一一变量出我们需要的一个组件实例是比较困难的，尤其是组件动态渲染时，他的序列是不固定的，Vue提供了子组件索引的方法，用特殊的属性ref来为子组件指定一个索引名称。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"> <span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#39;package2.64/dist/vue.js&#39;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app_ref&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">button</span> <span class="err">@</span><span class="na">click</span><span class="o">=</span><span class="s">&#34;handleRef&#34;</span><span class="p">&gt;</span>通过ref获取子组件实例<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">ref-component</span> <span class="na">ref</span><span class="o">=</span><span class="s">&#34;comA&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">ref-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;ref-component&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;&lt;div&gt;子组件&lt;/div&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span><span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">message</span><span class="o">:</span><span class="s2">&#34;子组件内容&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span> <span class="s2">&#34;#app_ref&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">methods</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">handleRef</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">                <span class="kd">var</span> <span class="nx">msg</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">$refs</span><span class="p">.</span><span class="nx">comA</span><span class="p">.</span><span class="nx">message</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">msg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	在父组件模板中，子组件标签上使用ref指定一个名称，并在父组件内通过this.$refs来访问指定名称的子组件。$refs只有在组件渲染完成后才填充，并且它是非响应式的，它仅仅作为一个直接访问子组件的应急方案，应当避免在模板或计算属性中使用$refs。</p>
+<h2 id="74-使用slot分发内容">7.4 使用slot分发内容</h2>
+<h3 id="741-什么是slot">7.4.1 什么是slot</h3>
+<p>​	当需要让组件组合使用，混合父组件的内容与子组件的模板时，就会用到slot，这个过程叫做内容分发（transclusion）。以<app>为例子，他有两个特点:</p>
+<ul>
+<li>组件不知道他的挂载点会有什么内容，挂载点的内容是由<app>的父组件决定的</li>
+<li>组件很可能有他自己的模板。</li>
+</ul>
+<p>​	props传递数据、events触发事件和solt内容分发就构成了Vue组件的三个API来源，再复杂的组件也是有这三个部分构成的。</p>
+<h2 id="742-作用域">7.4.2 作用域</h2>
+<p>​	父组件模板的内容时在父组件作用域内编译，子组件模板的内容是在子组件作用域内编译，例如下面的代码示例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"> <span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#39;package2.64/dist/vue.js&#39;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">   <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app_area&#39;</span> <span class="na">v-show</span><span class="o">=</span><span class="s">&#34;showchild&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">child-component</span><span class="p">&gt;&lt;/</span><span class="nt">child-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;child-component&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;&lt;div&gt;子组件&lt;/div&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//这里的showchild绑定的事父组件的数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span> <span class="s2">&#34;#app_area&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">showchild</span><span class="o">:</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//如果想在子组件是哪个绑定 那应该是
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;child-component&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;&lt;div v-show=&#34;showchild&#34;&gt;子组件&lt;/div&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      	<span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">showchild</span><span class="o">:</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">//slot分发的内容，作用域是在父组件上的
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="743-slot用法">7.4.3 slot用法</h3>
+<h4 id="单个slot">单个slot</h4>
+<p>​	在子组件内使用特殊的<slot>元素就可以为这个子组件开启一个slot(插槽)，在父组件模板里，插入在子组件标签内的所有内容将替代子组件的<slot>标签及它的内容：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app_slot&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">slot-component</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>分发的内容<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>更多的分发内容<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">slot-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;slot-component&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">        &lt;div&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &lt;slot&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">                &lt;p&gt;如果父组件没有插入内容，我将作为默认出现&lt;/p&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &lt;/slot&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">        &lt;/div&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">appslot</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span> <span class="s2">&#34;#app_slot&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">--</span><span class="err">!</span><span class="na">子组件slot-component的模板内定义了一个solt元素</span><span class="err">，</span><span class="na">并且用一个</span><span class="err">&lt;</span><span class="na">p</span><span class="p">&gt;</span>作为默认内容，在父组件没有使用slot时，会渲染这段默认的文本；如果写入了slot，就会替换整个slot，所以以上渲染后的结果为：--&gt;
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app_slot&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>分发的内容<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>更多的分发内容<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	注意，子组件slot内的备用内容，他的作用域是子组件本身。</p>
+<h4 id="具名slot">具名Slot</h4>
+<p>​	给<slot>元素指定一个name后可以分发多个内容，具名Slot可以与单个Slot共存：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app_name_slot&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">nameslot-component</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">h2</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;header&#34;</span><span class="p">&gt;</span><span class="nx">标题</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="nx">分发的内容</span><span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="nx">更多的分发内容</span><span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;footer&#34;</span><span class="p">&gt;</span><span class="nx">底部信息</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">&lt;</span><span class="err">/nameslot-component&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">scrip</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">   <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;nameslot-component&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">        &lt;div class=&#34;container&#34;&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &lt;div class=&#34;header&#34;&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">              &lt;slot name=&#34;header&#34;&gt; &lt;/slot&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &lt;/div&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &lt;div class=&#34;main&#34;&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">              &lt;slot&gt; &lt;/slot&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &lt;/div&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &lt;div class=&#34;footer&#34;&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">              &lt;slot name=&#34;footer&#34;&gt; &lt;/slot&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">            &lt;/div&gt;\
+</span></span></span><span class="line"><span class="cl"><span class="s1">        &lt;/div&gt;&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">appNameSlot</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">el</span><span class="o">:</span> <span class="s2">&#34;#app_name_slot&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">scrip</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	子组件内声明了三个<slot>元素，其中在<div class="main">内的<slot>没有name特性的，他将作为默认slot出现，父组件没有使用slot特性的元素与内容都将出现在这里，如果没有指定默认的匿名slot，父组件内多余的内容片段都将被抛弃。上例子最终渲染后的结果为：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;container&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;header&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span> 标题<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;main&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>正文内容<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>更多的正文内容<span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;footer&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        底部信息
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	在组合使用组件时，内容分发API至关重要。</p>
+<h3 id="744-作用域插槽">7.4.4 作用域插槽</h3>
+<p>​	作用域插槽是一种特殊的slot，使用一个可以复用的模板替代已渲染元素。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app_scope_slot&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">scopeslot-component</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">template</span> <span class="na">scope</span><span class="o">=</span><span class="s">&#34;props&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>来自父组件的内容<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>{{props.msg}}<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">     <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">scopeslot-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">scrip</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      Vue.component(&#39;scopeslot-component&#39;,{
+</span></span><span class="line"><span class="cl">        template: &#39;\
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;container&#34;</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">slot</span> <span class="na">msg</span><span class="o">=</span><span class="s">&#34;来自子组件的内容&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>&#39;
+</span></span><span class="line"><span class="cl">    });
+</span></span><span class="line"><span class="cl">    var appScpeSlot=new Vue({
+</span></span><span class="line"><span class="cl">        el:&#34;#app_scope_slot&#34;
+</span></span><span class="line"><span class="cl">    })
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">scrip</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	观察子组件的模板，在<slot>元素上有一个类似props传递给组件的写法msg=&ldquo;xxx&rdquo;,将数据传到了插槽，父组件中使用了<template>元素，而且拥有一个scope=&ldquo;props&quot;的特性，这里的props只是一个临时变量。template内可以通过它访问来自子组件插槽的数据msg。上面的示例最终渲染的结果为：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;app_scope_slot&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;container&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>来自父组件的内容<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>来自子组件的内容<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	作用域插槽更具代表性的用例是列表组件，允许组件自定义应该如何渲染列表的每一项。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app_scope_list_slot&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">mylist-component</span> <span class="na">:books</span><span class="o">=</span><span class="s">&#34;books&#34;</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">    <span class="c">&lt;!--作用域插槽也可以是具名的Slot--&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">template</span> <span class="na">scope</span><span class="o">=</span><span class="s">&#34;props&#34;</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;book&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span>{{props.bookName}}<span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">mylist-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">scrip</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">   Vue.component(&#39;mylist-component&#39;,{
+</span></span><span class="line"><span class="cl">        props:{
+</span></span><span class="line"><span class="cl">            books:{
+</span></span><span class="line"><span class="cl">                type:Array,
+</span></span><span class="line"><span class="cl">                default:function(){
+</span></span><span class="line"><span class="cl">                    return [];
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            }
+</span></span><span class="line"><span class="cl">        },
+</span></span><span class="line"><span class="cl">        template:&#39;\
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">slot</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;book&#34;</span> <span class="na">v-for</span><span class="o">=</span><span class="s">&#34;book in books&#34;</span><span class="err">\</span>
+</span></span><span class="line"><span class="cl">            <span class="na">:book-name</span><span class="o">=</span><span class="s">&#34;book.name&#34;</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">slot</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">            <span class="c">&lt;!--这里也可以写默认slot内容--&gt;</span>\
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>&#39;
+</span></span><span class="line"><span class="cl">    })
+</span></span><span class="line"><span class="cl">    var mylist=new Vue({
+</span></span><span class="line"><span class="cl">        el:&#34;#app_scope_list_slot&#34;,
+</span></span><span class="line"><span class="cl">        data:{
+</span></span><span class="line"><span class="cl">            books:[
+</span></span><span class="line"><span class="cl">                {name:&#34;Vue实战&#34;},
+</span></span><span class="line"><span class="cl">                {name:&#34;Kubernetes入门到精通&#34;},
+</span></span><span class="line"><span class="cl">                {name:&#34;Go底层原理分析&#34;},
+</span></span><span class="line"><span class="cl">                {name:&#34;Docker源码解析&#34;},
+</span></span><span class="line"><span class="cl">            ]
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    });
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">scrip</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	子组件mylist-component接收一个来自父级的props数组books，并且将他在name为book的slot上适应v-for指令循环，同时暴露一个变量bookName。</p>
+<p>​	如果你仔细揣摩上面的用法，你可能会产生这样的疑问：我直接在父组件上使用v-for不就好了吗，为什么还要绕一步，在子组件里面循环呢？的确，如果知识针对上面的示例，这样写是多此一举的，此例子的主要目的是介绍作用域的用法，并没有加入使用场景，而作用域插槽的使用场景就是既可以复用子组件的slot，又可以使slot内容不一致，如果上例还在其他组件内使用，<li>的内容渲染权是由使用者掌握的，而数据却可以通过临时变量（比如props）从子组件内获取。</p>
+<h3 id="745-访问slot">7.4.5 访问slot</h3>
+<p>​	$slots方法提供了访问被slot分发的内容的方法。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;app_visit_slot&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">visitslot-component</span><span class="p">&gt;</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">h2</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;header&#34;</span><span class="p">&gt;</span>标题<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>正文内容<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>正文其他内容<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;footer&#34;</span><span class="p">&gt;</span>底部信息<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">visitslot-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">scrip</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">     Vue.component(&#39;visitslot-component&#39;,{
+</span></span><span class="line"><span class="cl">        template:&#39;\
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;container&#34;</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;header&#34;</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">slot</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;header&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;main&#34;</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">slot</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;footer&#34;</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">slot</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;footer&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>&#39;,
+</span></span><span class="line"><span class="cl">        mounted:function(){
+</span></span><span class="line"><span class="cl">            var header=this.$slots.header;
+</span></span><span class="line"><span class="cl">            var main=this.$slots.default;
+</span></span><span class="line"><span class="cl">            var footer=this.$slots.footer;
+</span></span><span class="line"><span class="cl">            console.log(footer);
+</span></span><span class="line"><span class="cl">            console.log(footer[0].elm.innerHTML);
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    });
+</span></span><span class="line"><span class="cl">    var visitslot=new Vue({
+</span></span><span class="line"><span class="cl">        el:&#34;#app_visit_slot&#34;
+</span></span><span class="line"><span class="cl">    })
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">scrip</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	$slots在业务中几乎用不到，在用render函数创建组件时会比较有用，主要还是应用独立组件开发中。</p>
+<h2 id="75-组件的高级用法">7.5 组件的高级用法</h2>
+<h2 id="751-递归组件">7.5.1 递归组件</h2>
+<p>​	组件在他的模板内可以递归地调用自己，只要个组件设置name选项就可以了：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;recursion&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">recursion-component</span> <span class="na">:count</span><span class="o">=</span><span class="s">&#34;1&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">recursion-component</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">scrip</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  Vue.component(&#39;recursion-component&#39;,{
+</span></span><span class="line"><span class="cl">          name:&#39;recursion-component&#39;,
+</span></span><span class="line"><span class="cl">          props:{
+</span></span><span class="line"><span class="cl">              count:{
+</span></span><span class="line"><span class="cl">                  type:Number,
+</span></span><span class="line"><span class="cl">                  default:1
+</span></span><span class="line"><span class="cl">              }
+</span></span><span class="line"><span class="cl">          },
+</span></span><span class="line"><span class="cl">          template:&#39;\
+</span></span><span class="line"><span class="cl">          <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;recursion&#34;</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">              <span class="p">&lt;</span><span class="nt">recursion-component</span> <span class="na">:count</span><span class="o">=</span><span class="s">&#34;count+1&#34;</span><span class="err">\</span>
+</span></span><span class="line"><span class="cl">                                  <span class="na">v-if</span><span class="o">=</span><span class="s">&#34;count&lt;3&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">recursion-component</span><span class="p">&gt;</span>\
+</span></span><span class="line"><span class="cl">          <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>&#39;,
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      })
+</span></span><span class="line"><span class="cl">      var recursion=new Vue({
+</span></span><span class="line"><span class="cl">          el:&#34;#recursion&#34;
+</span></span><span class="line"><span class="cl">      })
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">scrip</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>​	设置name后，在组件模板内就可以递归调用了，不过需要注意的事，必须给一个条件来限制递归数量，否则会抛出错误：max stack size exceeded。</p>
+<p>​	组件递归使用可以用来开发一些具有未知层级关系的独立组件，比如级联选择器和树形控件等。</p>
+<h2 id="752-内联模板">7.5.2 内联模板</h2>
+<h2 id="753-动态组件">7.5.3 动态组件</h2>
+<h2 id="754-异步组件">7.5.4 异步组件</h2>
+<h1 id="八-自定义指令">八 自定义指令</h1>
+<h1 id="render函数">Render函数</h1>
+<h1 id="使用webpack">使用webpack</h1>
+<h1 id="插件">插件</h1>
+<h1 id="iview经典组件剖析">iView经典组件剖析</h1>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-06-05</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://%E6%98%8E%E5%A5%87.top/vue%E5%AE%9E%E6%88%98/" data-title="Vue实战" data-hashtags="前端,Vue"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://%E6%98%8E%E5%A5%87.top/vue%E5%AE%9E%E6%88%98/" data-hashtag="前端"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="http://%E6%98%8E%E5%A5%87.top/vue%E5%AE%9E%E6%88%98/" data-title="Vue实战"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="http://%E6%98%8E%E5%A5%87.top/vue%E5%AE%9E%E6%88%98/" data-title="Vue实战"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@6.20.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="http://%E6%98%8E%E5%A5%87.top/vue%E5%AE%9E%E6%88%98/" data-title="Vue实战"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/%E5%89%8D%E7%AB%AF/">前端</a>,&nbsp;<a href="/tags/vue/">Vue</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/%E8%BF%9B%E9%98%B6%E7%AF%87/" class="prev" rel="prev" title="进阶篇"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>进阶篇</a>
+            <a href="/godifferentwithothers/" class="next" rel="next" title="Go语言和其他语言的差异">Go语言和其他语言的差异<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+<div id="comments"><div id="disqus_thread" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://disqus.com/?ref_noscript">Disqus</a>.
+            </noscript><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2021 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">李明奇</a></span><span class="icp-splitter">&nbsp;|&nbsp;</span><br class="icp-br"/>
+                    <span class="icp"><div style="width:400px;margin:0 auto; padding:20px 0;"><a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11011402012187" style="color:#666" target="_blank" ><img src="https://limingqi.oss-cn-beijing.aliyuncs.com/mingqi_blog/img/beian.png" style="float:left;"/>京公网安备 11011402012187号</a>&nbsp;&nbsp;&nbsp;&nbsp; <a style="color:#666" target="_blank" rel="noopener" href="http://beian.miit.gov.cn/">京ICP备2021039774号</a></div></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.css"><script type="text/javascript" src="https://.disqus.com/embed.js" defer></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.4.18/dist/Valine.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.0/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.1/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@8.5.4/dist/index.umd.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"valine":{"appId":"cIRpq8figzQxyGz5LyAdUahJ-gzGzoHsz","appKey":"T9YWfgGhznKaXXx7TCLxzS3C","avatar":"robohash","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@14.0.0/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":true,"highlight":true,"lang":true,"meta":true,"pageSize":true,"placeholder":"说点什么吧...","recordIP":true,"visitor":true}},"data":{"id-1":"心有玲曦遇见你","id-2":"心有玲曦遇见你"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

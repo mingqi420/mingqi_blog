@@ -1,0 +1,24 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Vue - 标签 - 心有玲曦遇见你</title>
+        <link>http://%E6%98%8E%E5%A5%87.top/tags/vue/</link>
+        <description>Vue - 标签 - 心有玲曦遇见你</description>
+        <generator>Hugo -- gohugo.io</generator><managingEditor>lidefu_420@163.com (李明奇)</managingEditor>
+            <webMaster>lidefu_420@163.com (李明奇)</webMaster><lastBuildDate>Sun, 05 Jun 2022 13:58:22 &#43;0800</lastBuildDate><atom:link href="http://%E6%98%8E%E5%A5%87.top/tags/vue/" rel="self" type="application/rss+xml" /><item>
+    <title>Vue实战</title>
+    <link>http://%E6%98%8E%E5%A5%87.top/vue%E5%AE%9E%E6%88%98/</link>
+    <pubDate>Sun, 05 Jun 2022 13:58:22 &#43;0800</pubDate>
+    <author>李明奇</author>
+    <guid>http://%E6%98%8E%E5%A5%87.top/vue%E5%AE%9E%E6%88%98/</guid>
+    <description><![CDATA[一 初识Vue.js 1、Vue.js是什么？ ​	简单小巧的核心，渐进式技术栈，足以应付任何规模的应用。
+​	使用Vue.js可以让web开发变得简单，同时也颠覆了传统前端开发模式。他提供了现代Web开发中常见的高级功能：
+ 解耦视图与数据 可复用的组件 前端路由 状态管理 虚拟DOM  1.1.1 MVVM模式 ​	MVVM模式是由经典的软件架构MVC衍生而来的，当View(视图层)变化时，会自动更新到ViewModel(视图模型)，反之亦然，View(视图层)和ViewModel之间通过双向绑定建立联系。
+该模式相对于MVC模式的优点：
+1.低耦合，可重用性，model以及view实现分离状态
+2.双向绑定，在mvc中只能是由原始数据控制产生数据，在mvvm模式中可以实现视图与数据双向的绑定
+3.减少dom操作。解决了数据频繁更新的问题。
+2、如何使用Vue.js 1.2.1 通过script加载CDN文件 1 2 3 4  &lt;!--自动识别最新稳定版本的Vue.js--&gt; &lt;script src=&#34;https://unpkg.com/vue/dist/vue.min.js&#34;&gt;&lt;/script&gt; &lt;!--指定某个具体版本的Vue.js--&gt; &lt;script src=&#34;https://unpkg.com/vue@2.1.6/dist/vue.min.js&#34;&gt;&lt;/script&gt;   1.2.2 将代码下载下来，通过相对路径来引用vue.js文件 1.2.3 Vue但文件的形式配合webpack使用 二 数据绑定和第一个Vue应用 2.1 Vue实例与数据绑定 2.1.1 实例与数据 ​	通过构造函数Vue创建一个Vue的根实例，并启动Vue应用：
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111  &lt;html&gt; &lt;head&gt; &lt;script src=&#39;package2.]]></description>
+</item>
+</channel>
+</rss>
